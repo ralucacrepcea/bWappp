@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Tutorial on XSS Reflected (PHP_SELF) in bWAPP</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        main {
+            flex: 1;
+            padding: 20px;
+        }
+
+        footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .image-container {
+            margin-bottom: 20px;
+        }
+        
+        .image-container img {
+            display: block;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .fullscreen img {
+            max-width: 90%;
+            max-height: 90%;
+        }
+
+        .language-switcher {
+            margin: 10px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .language-switcher button {
+            margin-left: 10px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        function setLanguage(lang) {
+            localStorage.setItem('language', lang);
+            applyLanguage();
+        }
+
+        function applyLanguage() {
+            const lang = localStorage.getItem('language') || 'en';
+            if (lang === 'ro') {
+                document.getElementById('page-title').textContent = 'Tutorial despre XSS Reflected (PHP_SELF) în bWAPP';
+                document.querySelector('h1').textContent = 'Tutorial despre XSS Reflected (PHP_SELF) în bWAPP';
+                document.querySelector('h2:nth-of-type(1)').textContent = '1. Configurarea Mediului';
+                document.querySelector('p:nth-of-type(1)').textContent = 'Pentru acest tutorial, veți avea nevoie de:';
+                document.querySelector('ul li:nth-of-type(1)').textContent = 'bWAPP: o aplicație web vulnerabilă pentru practici de securitate.';
+                document.querySelector('ul li:nth-of-type(2)').textContent = 'Google Chrome sau un alt browser web.';
+                document.querySelector('h2:nth-of-type(2)').textContent = '2. Accesarea bWAPP';
+                document.querySelector('p:nth-of-type(2)').innerHTML = 'Deschideți bWAPP într-un browser web:<br>URL: <code>http://localhost/bWAPP/login.php</code>';
+                document.querySelector('p:nth-of-type(3)').textContent = 'Conectați-vă cu numele de utilizator și parola implicite.';
+                document.querySelector('h2:nth-of-type(3)').textContent = '3. Selectarea Vulnerabilității XSS';
+                document.querySelector('p:nth-of-type(4)').textContent = 'În bWAPP, selectați opțiunea XSS - Reflected (PHP_SELF) din lista vulnerabilităților.';
+                document.querySelector('h2:nth-of-type(4)').textContent = '4. Introducerea Exploatării';
+                document.querySelector('p:nth-of-type(5)').textContent = 'Introduceți un payload XSS în câmpul de nume. Acesta va fi folosit pentru a testa vulnerabilitatea.';
+                document.querySelector('p:nth-of-type(6)').innerHTML = 'Exemplu de payload: <pre>&lt;script&gt;alert(\'hack\')&lt;/script&gt;</pre>';
+                document.querySelector('h2:nth-of-type(5)').textContent = '5. Executarea Payload-ului';
+                document.querySelector('p:nth-of-type(7)').textContent = 'Trimiteți formularul pentru a declanșa payload-ul. Scriptul este executat când pagina reflectă inputul utilizatorului înapoi.';
+                document.querySelector('h2:nth-of-type(6)').textContent = '6. Observarea Rezultatelor';
+                document.querySelector('p:nth-of-type(8)').textContent = 'Payload-ul XSS se execută și caseta de alertă afișează mesajul "hack" așa cum era de așteptat.';
+                document.querySelector('h2:nth-of-type(7)').textContent = '7. Creșterea Nivelului de Securitate';
+                document.querySelector('p:nth-of-type(9)').textContent = 'Pentru a testa cum setările de securitate afectează vulnerabilitatea, creșteți nivelul de securitate de la scăzut la mediu.';
+                document.querySelector('h2:nth-of-type(8)').textContent = '8. Retestarea Payload-ului';
+                document.querySelector('p:nth-of-type(10)').textContent = 'După creșterea nivelului de securitate, retestați același payload XSS pentru a vedea dacă este încă exploatabil.';
+                document.querySelector('h2:nth-of-type(9)').textContent = '9. Observarea Modificărilor';
+                document.querySelector('p:nth-of-type(11)').textContent = 'Scriptul poate sau nu să se execute, în funcție de măsurile de securitate implementate la acest nivel.';
+                document.querySelector('h2:nth-of-type(10)').textContent = '10. Testarea cu Payload-uri Diferite';
+                document.querySelector('p:nth-of-type(12)').textContent = 'Experimentați cu diferite payload-uri XSS pentru a testa eficiența setărilor de securitate existente.';
+                document.querySelector('h2:nth-of-type(11)').textContent = '11. Observația Finală';
+                document.querySelector('p:nth-of-type(13)').textContent = 'În pasul final, puteți vedea că payload-ul XSS declanșează o casetă de alertă cu un mesaj personalizat "/hack/". Acest lucru indică faptul că payload-ul a fost executat cu succes.';
+                document.querySelector('h2:nth-of-type(12)').textContent = 'Concluzie';
+                document.querySelector('p:nth-of-type(14)').textContent = 'Acest tutorial a demonstrat cum să exploatați o vulnerabilitate XSS Reflected (PHP_SELF) în bWAPP. Ați testat diferite payload-uri și ați observat efectele schimbării nivelului de securitate.';
+                document.querySelector('p:nth-of-type(15)').textContent = 'Înțelegerea acestor concepte este esențială pentru testarea securității aplicațiilor web și ajută la securizarea aplicațiilor împotriva unor astfel de vulnerabilități.';
+                document.querySelector('footer p').textContent = '© 2024 Site-ul meu. Toate drepturile rezervate.';
+            } else {
+                document.getElementById('page-title').textContent = 'Tutorial on XSS Reflected (PHP_SELF) in bWAPP';
+                document.querySelector('h1').textContent = 'Tutorial on XSS Reflected (PHP_SELF) in bWAPP';
+                document.querySelector('h2:nth-of-type(1)').textContent = '1. Setting Up the Environment';
+                document.querySelector('p:nth-of-type(1)').textContent = 'For this tutorial, you will need:';
+                document.querySelector('ul li:nth-of-type(1)').textContent = 'bWAPP: a vulnerable web application for security practice.';
+                document.querySelector('ul li:nth-of-type(2)').textContent = 'Google Chrome or another web browser.';
+                document.querySelector('h2:nth-of-type(2)').textContent = '2. Accessing bWAPP';
+                document.querySelector('p:nth-of-type(2)').innerHTML = 'Open bWAPP in a web browser:<br>URL: <code>http://localhost/bWAPP/login.php</code>';
+                document.querySelector('p:nth-of-type(3)').textContent = 'Log in with the default username and password.';
+                document.querySelector('h2:nth-of-type(3)').textContent = '3. Selecting the XSS Vulnerability';
+                document.querySelector('p:nth-of-type(4)').textContent = 'In bWAPP, select the XSS - Reflected (PHP_SELF) option from the list of vulnerabilities.';
+                document.querySelector('h2:nth-of-type(4)').textContent = '4. Entering the Exploit';
+                document.querySelector('p:nth-of-type(5)').textContent = 'Enter an XSS payload into the first name field. This will be used to test the vulnerability.';
+                document.querySelector('p:nth-of-type(6)').innerHTML = 'Example payload: <pre>&lt;script&gt;alert(\'hack\')&lt;/script&gt;</pre>';
+                document.querySelector('h2:nth-of-type(5)').textContent = '5. Executing the Payload';
+                document.querySelector('p:nth-of-type(7)').textContent = 'Submit the form to trigger the payload. The script is executed when the page reflects the user input back.';
+                document.querySelector('h2:nth-of-type(6)').textContent = '6. Observing the Results';
+                document.querySelector('p:nth-of-type(8)').textContent = 'The XSS payload executes, and the alert box displays the message "hack" as expected.';
+                document.querySelector('h2:nth-of-type(7)').textContent = '7. Increasing Security Level';
+                document.querySelector('p:nth-of-type(9)').textContent = 'To test how the security settings affect the vulnerability, increase the security level from low to medium.';
+                document.querySelector('h2:nth-of-type(8)').textContent = '8. Retesting the Payload';
+                document.querySelector('p:nth-of-type(10)').textContent = 'After increasing the security level, retest the same XSS payload to see if it is still exploitable.';
+                document.querySelector('h2:nth-of-type(9)').textContent = '9. Observing Changes';
+                document.querySelector('p:nth-of-type(11)').textContent = 'The script may or may not execute depending on the implemented security measures at this level.';
+                document.querySelector('h2:nth-of-type(10)').textContent = '10. Testing with Different Payloads';
+                document.querySelector('p:nth-of-type(12)').textContent = 'Experiment with different XSS payloads to test the effectiveness of the security settings in place.';
+                document.querySelector('h2:nth-of-type(11)').textContent = '11. Final Observation';
+                document.querySelector('p:nth-of-type(13)').textContent = 'In the final step, you can see that the XSS payload triggers an alert box with a custom message "/hack/". This indicates that the payload was successfully executed.';
+                document.querySelector('h2:nth-of-type(12)').textContent = 'Conclusion';
+                document.querySelector('p:nth-of-type(14)').textContent = 'This tutorial demonstrated how to exploit an XSS Reflected (PHP_SELF) vulnerability in bWAPP. You tested different payloads and observed the effects of changing the security level.';
+                document.querySelector('p:nth-of-type(15)').textContent = 'Understanding these concepts is essential for web application security testing and helps in securing applications against such vulnerabilities.';
+                document.querySelector('footer p').textContent = '© 2024 My Website. All rights reserved.';
+            }
+        }
+
+        function openFullscreen(img) {
+            var fullscreenContainer = document.getElementById('fullscreenContainer');
+            var fullscreenImage = document.getElementById('fullscreenImage');
+            fullscreenImage.src = img.src;
+            fullscreenContainer.style.display = 'flex';
+        }
+
+        function closeFullscreen() {
+            var fullscreenContainer = document.getElementById('fullscreenContainer');
+            fullscreenContainer.style.display = 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', applyLanguage);
+    </script>
+</head>
+<body>
+    <div class="language-switcher">
+        <button onclick="setLanguage('en')">English</button>
+        <button onclick="setLanguage('ro')">Română</button>
+    </div>
+    <main>
+        <h1>Tutorial on XSS Reflected (PHP_SELF) in bWAPP</h1>
+
+        <h2>1. Setting Up the Environment</h2>
+        <p>For this tutorial, you will need:</p>
+        <ul>
+            <li><strong>bWAPP</strong>: a vulnerable web application for security practice.</li>
+            <li><strong>Google Chrome</strong> or another web browser.</li>
+        </ul>
+
+        <h2>2. Accessing bWAPP</h2>
+        <p><strong>Open bWAPP in a web browser:</strong></p>
+        <p>URL: <code>http://localhost/bWAPP/login.php</code></p>
+        <p>Log in with the default username and password.</p>
+        
+        <div class="image-container">
+            <img src="PhpSelf1.png" alt="bWAPP Login" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 1: Open bWAPP and navigate to the login page.</p>
+        </div>
+
+        <h2>3. Selecting the XSS Vulnerability</h2>
+        <p>In bWAPP, select the XSS - Reflected (PHP_SELF) option from the list of vulnerabilities.</p>
+
+        <div class="image-container">
+            <img src="PhpSelf2.png" alt="Select XSS Reflected (PHP_SELF)" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 2: Select the XSS - Reflected (PHP_SELF) vulnerability.</p>
+        </div>
+
+        <h2>4. Entering the Exploit</h2>
+        <p>Enter an XSS payload into the first name field. This will be used to test the vulnerability.</p>
+        <p>Example payload: <pre>&lt;script&gt;alert('hack')&lt;/script&gt;</pre></p>
+
+        <div class="image-container">
+            <img src="PhpSelf3.png" alt="Entering XSS Payload" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 3: Entering the XSS payload into the first name field.</p>
+        </div>
+
+        <h2>5. Executing the Payload</h2>
+        <p>Submit the form to trigger the payload. The script is executed when the page reflects the user input back.</p>
+
+        <div class="image-container">
+            <img src="PhpSelf4.png" alt="Executing the Payload" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 4: Submit the form to execute the XSS payload.</p>
+        </div>
+
+        <h2>6. Observing the Results</h2>
+        <p>The XSS payload executes, and the alert box displays the message "hack" as expected.</p>
+
+        <div class="image-container">
+            <img src="PhpSelf5.png" alt="XSS Alert Triggered" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 5: The XSS payload triggers an alert box with the message "hack".</p>
+        </div>
+
+        <h2>7. Increasing Security Level</h2>
+        <p>To test how the security settings affect the vulnerability, increase the security level from low to medium.</p>
+
+        <div class="image-container">
+            <img src="PhpSelf6.png" alt="Increase Security Level" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 6: Increase the security level in bWAPP.</p>
+        </div>
+
+        <h2>8. Retesting the Payload</h2>
+        <p>After increasing the security level, retest the same XSS payload to see if it is still exploitable.</p>
+
+        <div class="image-container">
+            <img src="PhpSelf7.png" alt="Retesting XSS Payload" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 7: Retesting the XSS payload at a higher security level.</p>
+        </div>
+
+        <h2>9. Observing Changes</h2>
+        <p>The script may or may not execute depending on the implemented security measures at this level.</p>
+
+        <div class="image-container">
+            <img src="PhpSelf8.png" alt="Observing Security Impact" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 8: Observing the results of the XSS test after increasing security.</p>
+        </div>
+
+        <h2>10. Testing with Different Payloads</h2>
+        <p>Experiment with different XSS payloads to test the effectiveness of the security settings in place.</p>
+
+        <div class="image-container">
+            <img src="PhpSelf9.png" alt="Testing with Different Payloads" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 9: Testing different XSS payloads.</p>
+        </div>
+
+        <h2>11. Final Observation</h2>
+        <p>In the final step, you can see that the XSS payload triggers an alert box with a custom message "/hack/". This indicates that the payload was successfully executed.</p>
+
+        <div class="image-container">
+            <img src="PhpSelf11.png" alt="Final XSS Alert Triggered" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 10: The final XSS payload triggers an alert box with the message "/hack/".</p>
+        </div>
+
+        <h2>Conclusion</h2>
+        <p>This tutorial demonstrated how to exploit an XSS Reflected (PHP_SELF) vulnerability in bWAPP. You tested different payloads and observed the effects of changing the security level.</p>
+        <p>Understanding these concepts is essential for web application security testing and helps in securing applications against such vulnerabilities.</p>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 My Website. All rights reserved.</p>
+    </footer>
+
+    <div id="fullscreenContainer" class="fullscreen" style="display: none;" ondblclick="closeFullscreen()">
+        <img id="fullscreenImage" src="" alt="">
+    </div>
+
+    <script>
+        function openFullscreen(img) {
+            var fullscreenContainer = document.getElementById('fullscreenContainer');
+            var fullscreenImage = document.getElementById('fullscreenImage');
+            fullscreenImage.src = img.src;
+            fullscreenContainer.style.display = 'flex';
+        }
+
+        function closeFullscreen() {
+            var fullscreenContainer = document.getElementById('fullscreenContainer');
+            fullscreenContainer.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
