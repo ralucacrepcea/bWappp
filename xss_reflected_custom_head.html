@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Tutorial: XSS - Reflected (Custom Header)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        main {
+            flex: 1;
+            padding: 20px;
+        }
+
+        footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .image-container {
+            margin-bottom: 20px;
+        }
+
+        .image-container img {
+            display: block;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .fullscreen img {
+            max-width: 90%;
+            max-height: 90%;
+        }
+
+        .language-switcher {
+            margin: 10px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .language-switcher button {
+            margin-left: 10px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        function setLanguage(lang) {
+            localStorage.setItem('language', lang);
+            applyLanguage();
+        }
+
+        function applyLanguage() {
+            const lang = localStorage.getItem('language') || 'en';
+            if (lang === 'ro') {
+                document.getElementById('page-title').textContent = 'Tutorial: XSS - Reflected (Custom Header)';
+                document.querySelector('h1').textContent = 'Tutorial: XSS - Reflected (Header Personalizat)';
+                document.querySelector('h2:nth-of-type(1)').textContent = '1. Configurarea bWAPP și Burp Suite';
+                document.querySelector('h3:nth-of-type(1)').textContent = 'Lansarea bWAPP:';
+                document.querySelector('p:nth-of-type(1)').textContent = 'Deschideți browserul și navigați la aplicația bWAPP. Setați nivelul de securitate la "low" și alegeți bug-ul "XSS - Reflected (Custom Header)" din meniul dropdown.';
+                document.querySelector('h3:nth-of-type(2)').textContent = 'Configurarea Burp Suite:';
+                document.querySelector('p:nth-of-type(2)').textContent = 'Deschideți Burp Suite și asigurați-vă că interceptarea este inițial dezactivată.';
+                document.querySelector('h2:nth-of-type(2)').textContent = '2. Interceptarea cererii';
+                document.querySelector('h3:nth-of-type(3)').textContent = 'Activarea interceptării în Burp Suite:';
+                document.querySelector('p:nth-of-type(3)').textContent = 'Activați interceptarea în Burp Suite făcând clic pe "Intercept is off" pentru a comuta la "Intercept is on".';
+                document.querySelector('h3:nth-of-type(4)').textContent = 'Reîmprospătarea paginii bWAPP:';
+                document.querySelector('p:nth-of-type(4)').textContent = 'Reveniți la pagina bWAPP în browser și reîmprospătați pagina pentru a captura cererea în Burp Suite.';
+                document.querySelector('h2:nth-of-type(3)').textContent = '3. Modificarea cererii';
+                document.querySelector('p:nth-of-type(5)').textContent = 'Reîmprospătați pagina XSS - Reflected (Custom Header) în browserul integrat al Burp.';
+                document.querySelector('p:nth-of-type(6)').textContent = 'Burp Suite va captura cererea HTTP. Veți vedea detaliile cererii în fila Proxy sub "Intercept".';
+                document.querySelector('h3:nth-of-type(5)').textContent = 'Trimiterea cererii la Repeater';
+                document.querySelector('p:nth-of-type(7)').textContent = 'Faceți clic dreapta pe cererea capturată și selectați Send to Repeater. Aceasta vă permite să modificați și să retrimiteți cererea.';
+                document.querySelector('h2:nth-of-type(4)').textContent = '4. Vizualizarea Răspunsului';
+                document.querySelector('h3:nth-of-type(6)').textContent = 'Vizualizarea răspunsului în Burp Suite:';
+                document.querySelector('p:nth-of-type(8)').textContent = 'Modificați antetul HTTP';
+                document.querySelector('p:nth-of-type(9)').textContent = 'Mergeți la fila Repeater din Burp Suite.';
+                document.querySelector('p:nth-of-type(10)').textContent = 'Găsiți antetul personalizat (de ex., bWAPP) în cerere.';
+                document.querySelector('p:nth-of-type(11)').innerHTML = 'Introduceți un script malițios în antet, cum ar fi <pre>&lt;script&gt;alert(\'Hacked\')&lt;/script&gt;</pre>';
+                document.querySelector('h3:nth-of-type(7)').textContent = 'Verificarea executării XSS:';
+                document.querySelector('p:nth-of-type(12)').textContent = 'Faceți clic dreapta pe răspuns și selectați "Show response in browser". Copiați URL-ul generat și lipiți-l în browser pentru a vedea executarea payload-ului XSS.';
+                document.querySelector('h2:nth-of-type(5)').textContent = '5. Schimbarea nivelului de securitate și repetarea';
+                document.querySelector('h3:nth-of-type(8)').textContent = 'Creșterea nivelului de securitate:';
+                document.querySelector('p:nth-of-type(13)').textContent = 'Reveniți la bWAPP și schimbați nivelul de securitate la "medium". Repetați pașii pentru a captura și modifica cererea folosind Burp Suite.';
+                document.querySelector('h3:nth-of-type(9)').textContent = 'Trimiterea și verificarea cererii modificate:';
+                document.querySelector('p:nth-of-type(14)').textContent = 'Modificați antetul cererii pentru a include un alt script, cum ar fi:';
+                document.querySelector('p:nth-of-type(15)').innerHTML = '<pre>bWAPP: &lt;script&gt;alert(\'Hacking\')&lt;/script&gt;</pre>';
+                document.querySelector('p:nth-of-type(16)').textContent = 'Trimiteți cererea modificată și verificați răspunsul în browser, ca înainte.';
+                document.querySelector('h2:nth-of-type(6)').textContent = '6. Testare Avansată';
+                document.querySelector('h3:nth-of-type(10)').textContent = 'Testare suplimentară:';
+                document.querySelector('p:nth-of-type(17)').textContent = 'Continuați testarea modificând anteturile cererilor cu payload-uri diferite și observând răspunsurile. Asigurați-vă că testați diferite scenarii schimbând nivelurile de securitate și validând modul în care aplicația gestionează diverse inputuri.';
+                document.querySelector('h2:nth-of-type(7)').textContent = 'Concluzie';
+                document.querySelector('p:nth-of-type(18)').textContent = 'Urmând acești pași, ați demonstrat cu succes cum să identificați și să exploatați o vulnerabilitate XSS reflectată folosind Burp Suite și bWAPP. Amintiți-vă să urmați ghidurile etice și să efectuați astfel de teste doar pe aplicații pentru care aveți permisiunea de a testa.';
+                document.querySelector('footer p').textContent = '© 2024 Site-ul meu. Toate drepturile rezervate.';
+            } else {
+                document.getElementById('page-title').textContent = 'Tutorial: XSS - Reflected (Custom Header)';
+                document.querySelector('h1').textContent = 'Tutorial: XSS - Reflected (Custom Header)';
+                document.querySelector('h2:nth-of-type(1)').textContent = '1. Setting Up bWAPP and Burp Suite';
+                document.querySelector('h3:nth-of-type(1)').textContent = 'Launching bWAPP:';
+                document.querySelector('p:nth-of-type(1)').textContent = 'Open your browser and navigate to the bWAPP application. Set the security level to "low" and choose the bug "XSS - Reflected (Custom Header)" from the dropdown menu.';
+                document.querySelector('h3:nth-of-type(2)').textContent = 'Setting Up Burp Suite:';
+                document.querySelector('p:nth-of-type(2)').textContent = 'Open Burp Suite and ensure that the interception is initially turned off.';
+                document.querySelector('h2:nth-of-type(2)').textContent = '2. Intercepting the Request';
+                document.querySelector('h3:nth-of-type(3)').textContent = 'Activating Interception in Burp Suite:';
+                document.querySelector('p:nth-of-type(3)').textContent = 'Activate interception in Burp Suite by clicking on "Intercept is off" to toggle it to "Intercept is on".';
+                document.querySelector('h3:nth-of-type(4)').textContent = 'Refreshing the bWAPP Page:';
+                document.querySelector('p:nth-of-type(4)').textContent = 'Return to the bWAPP page in your browser and refresh the page to capture the request in Burp Suite.';
+                document.querySelector('h2:nth-of-type(3)').textContent = '3. Modifying the Request';
+                document.querySelector('p:nth-of-type(5)').textContent = 'Refresh the XSS - Reflected (Custom Header) page in Burp\'s embedded browser.';
+                document.querySelector('p:nth-of-type(6)').textContent = 'Burp Suite will capture the HTTP request. You will see the request details in the Proxy tab under "Intercept".';
+                document.querySelector('h3:nth-of-type(5)').textContent = 'Send the Request to Repeater';
+                document.querySelector('p:nth-of-type(7)').textContent = 'Right-click on the captured request and select Send to Repeater. This allows you to modify and resend the request.';
+                document.querySelector('h2:nth-of-type(4)').textContent = '4. Viewing the Response';
+                document.querySelector('h3:nth-of-type(6)').textContent = 'Viewing the Response in Burp Suite:';
+                document.querySelector('p:nth-of-type(8)').textContent = 'Modify the HTTP Header';
+                document.querySelector('p:nth-of-type(9)').textContent = 'Go to the Repeater tab in Burp Suite.';
+                document.querySelector('p:nth-of-type(10)').textContent = 'Locate the custom header (e.g., bWAPP) in the request.';
+                document.querySelector('p:nth-of-type(11)').innerHTML = 'Inject a malicious script into the header, such as <pre>&lt;script&gt;alert(\'Hacked\')&lt;/script&gt;</pre>';
+                document.querySelector('h3:nth-of-type(7)').textContent = 'Verifying XSS Execution:';
+                document.querySelector('p:nth-of-type(12)').textContent = 'Right-click on the response and select "Show response in browser". Copy the generated URL and paste it into your browser to see the XSS payload execution.';
+                document.querySelector('h2:nth-of-type(5)').textContent = '5. Changing the Security Level and Repeating';
+                document.querySelector('h3:nth-of-type(8)').textContent = 'Increasing the Security Level:';
+                document.querySelector('p:nth-of-type(13)').textContent = 'Return to bWAPP and change the security level to "medium". Repeat the steps to capture and modify the request using Burp Suite.';
+                document.querySelector('h3:nth-of-type(9)').textContent = 'Sending and Verifying the Modified Request:';
+                document.querySelector('p:nth-of-type(14)').textContent = 'Modify the request header to include another script, such as:';
+                document.querySelector('p:nth-of-type(15)').innerHTML = '<pre>bWAPP: &lt;script&gt;alert(\'Hacking\')&lt;/script&gt;</pre>';
+                document.querySelector('p:nth-of-type(16)').textContent = 'Send the modified request and verify the response in the browser as before.';
+                document.querySelector('h2:nth-of-type(6)').textContent = '6. Advanced Testing';
+                document.querySelector('h3:nth-of-type(10)').textContent = 'Additional Testing:';
+                document.querySelector('p:nth-of-type(17)').textContent = 'Continue testing by modifying request headers with different payloads and observing the responses. Ensure you test different scenarios by changing security levels and validating how the application handles various inputs.';
+                document.querySelector('h2:nth-of-type(7)').textContent = 'Conclusion';
+                document.querySelector('p:nth-of-type(18)').textContent = 'By following these steps, you have successfully demonstrated how to identify and exploit a reflected XSS vulnerability using Burp Suite and bWAPP. Remember to follow ethical guidelines and perform such tests only on applications you have permission to test.';
+                document.querySelector('footer p').textContent = '© 2024 My Website. All rights reserved.';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', applyLanguage);
+    </script>
+</head>
+<body>
+    <div class="language-switcher">
+        <button onclick="setLanguage('en')">English</button>
+        <button onclick="setLanguage('ro')">Română</button>
+    </div>
+    <main>
+        <h1>Tutorial: XSS - Reflected (Custom Header)</h1>
+
+        <h2>1. Setting Up bWAPP and Burp Suite</h2>
+
+        <h3>Launching bWAPP:</h3>
+        <p>Open your browser and navigate to the bWAPP application. Set the security level to "low" and choose the bug "XSS - Reflected (Custom Header)" from the dropdown menu.</p>
+        <div class="image-container">
+            <img src="CustomHead1.png" alt="Launching bWAPP" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h3>Setting Up Burp Suite:</h3>
+        <p>Open Burp Suite and ensure that the interception is initially turned off.</p>
+        <div class="image-container">
+            <img src="CustomHead2.png" alt="Setting Up Burp Suite" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h2>2. Intercepting the Request</h2>
+
+        <h3>Activating Interception in Burp Suite:</h3>
+        <p>Activate interception in Burp Suite by clicking on "Intercept is off" to toggle it to "Intercept is on".</p>
+        <div class="image-container">
+            <img src="CustomHead3.png" alt="Activating Interception" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h3>Refreshing the bWAPP Page:</h3>
+        <p>Return to the bWAPP page in your browser and refresh the page to capture the request in Burp Suite.</p>
+        <div class="image-container">
+            <img src="CustomHead4.png" alt="Refreshing the bWAPP Page" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h2>3. Modifying the Request</h2>
+        <p>Refresh the XSS - Reflected (Custom Header) page in Burp's embedded browser.</p>
+        <p>Burp Suite will capture the HTTP request. You will see the request details in the Proxy tab under 'Intercept'.
+        </p>
+        <div class="image-container">
+            <img src="CustomHead5.png" alt="Capturing and Modifying the Request" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h3>Send the Request to Repeater</h3>
+        <p>Right-click on the captured request and select Send to Repeater. This allows you to modify and resend the request.
+        </p>
+        <div class="image-container">
+            <img src="CustomHead6.png" alt="Sending the Modified Request" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Turn it OFF the Intercept</p>
+            <img src="CustomHead7.png" alt="Sending the Modified Request" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h2>4. Viewing the Response</h2>
+
+        <h3>Viewing the Response in Burp Suite:</h3>
+        <p>Modify the HTTP Header</p>
+        <p>Go to the Repeater tab in Burp Suite.</p>
+        <p>Locate the custom header (e.g., bWAPP) in the request.</p>
+        <p>Inject a malicious script into the header, such as <pre>&lt;script&gt;alert('Hacked')&lt;/script&gt;</pre></p>
+        <div class="image-container">
+            <img src="CustomHead8.png" alt="Viewing the Response" width="400" height="300" ondblclick="openFullscreen(this)">
+            <img src="CustomHead9.png" alt="Viewing the Response" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h3>Verifying XSS Execution:</h3>
+        <p>Right-click on the response and select "Show response in browser". Copy the generated URL and paste it into your browser to see the XSS payload execution.</p>
+        <div class="image-container">
+            <img src="CustomHead10.png" alt="Verifying XSS Execution" width="400" height="300" ondblclick="openFullscreen(this)">
+            <img src="CustomHead11.png" alt="Verifying XSS Execution" width="400" height="300" ondblclick="openFullscreen(this)">
+            <img src="CustomHead12.png" alt="Verifying XSS Execution" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h2>5. Changing the Security Level and Repeating</h2>
+
+        <h3>Increasing the Security Level:</h3>
+        <p>Return to bWAPP and change the security level to "medium". Repeat the steps to capture and modify the request using Burp Suite.</p>
+        <div class="image-container">
+            <img src="CustomHead13.png" alt="Increasing the Security Level" width="400" height="300" ondblclick="openFullscreen(this)">
+            <img src="CustomHead14.png" alt="Increasing the Security Level" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h3>Sending and Verifying the Modified Request:</h3>
+        <p>Modify the request header to include another script, such as:</p>
+        <pre>
+bWAPP: &lt;script&gt;alert('Hacking')&lt;/script&gt;
+        </pre>
+        <p>Send the modified request and verify the response in the browser as before.</p>
+        <div class="image-container">
+            <img src="CustomHead15.png" alt="Sending and Verifying the Modified Request" width="400" height="300" ondblclick="openFullscreen(this)">
+            <img src="CustomHead16.png" alt="Sending and Verifying the Modified Request" width="400" height="300" ondblclick="openFullscreen(this)">
+            <img src="CustomHead17.png" alt="Sending and Verifying the Modified Request" width="400" height="300" ondblclick="openFullscreen(this)">
+            <img src="CustomHead18.png" alt="Sending and Verifying the Modified Request" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h2>6. Advanced Testing</h2>
+
+        <h3>Additional Testing:</h3>
+        <p>Continue testing by modifying request headers with different payloads and observing the responses. Ensure you test different scenarios by changing security levels and validating how the application handles various inputs.</p>
+        <div class="image-container">
+            <img src="CustomHead19.png" alt="Additional Testing" width="400" height="300" ondblclick="openFullscreen(this)">
+            <img src="CustomHead20.png" alt="Additional Testing" width="400" height="300" ondblclick="openFullscreen(this)">
+            <img src="CustomHead21.png" alt="Additional Testing" width="400" height="300" ondblclick="openFullscreen(this)">
+            <img src="CustomHead22.png" alt="Additional Testing" width="400" height="300" ondblclick="openFullscreen(this)">
+            <img src="CustomHead23.png" alt="Additional Testing" width="400" height="300" ondblclick="openFullscreen(this)">
+            <img src="CustomHead24.png" alt="Additional Testing" width="400" height="300" ondblclick="openFullscreen(this)">
+            <img src="CustomHead25.png" alt="Additional Testing" width="400" height="300" ondblclick="openFullscreen(this)">
+            <img src="CustomHead26.png" alt="Additional Testing" width="400" height="300" ondblclick="openFullscreen(this)">
+            <img src="CustomHead27.png" alt="Additional Testing" width="400" height="300" ondblclick="openFullscreen(this)">
+            <img src="CustomHead28.png" alt="Additional Testing" width="400" height="300" ondblclick="openFullscreen(this)">
+            <img src="CustomHead29.png" alt="Additional Testing" width="400" height="300" ondblclick="openFullscreen(this)">
+            <img src="CustomHead30.png" alt="Additional Testing" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h2>Conclusion</h2>
+        <p>By following these steps, you have successfully demonstrated how to identify and exploit a reflected XSS vulnerability using Burp Suite and bWAPP. Remember to follow ethical guidelines and perform such tests only on applications you have permission to test.</p>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 My Website. All rights reserved.</p>
+    </footer>
+
+    <div id="fullscreenContainer" class="fullscreen" style="display: none;" ondblclick="closeFullscreen()">
+        <img id="fullscreenImage" src="" alt="">
+    </div>
+
+    <script>
+        function openFullscreen(img) {
+            var fullscreenContainer = document.getElementById('fullscreenContainer');
+            var fullscreenImage = document.getElementById('fullscreenImage');
+            fullscreenImage.src = img.src;
+            fullscreenContainer.style.display = 'flex';
+        }
+
+        function closeFullscreen() {
+            var fullscreenContainer = document.getElementById('fullscreenContainer');
+            fullscreenContainer.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
