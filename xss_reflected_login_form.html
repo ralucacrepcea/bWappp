@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Tutorial on XSS Reflected (Login Form) in bWAPP</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        main {
+            flex: 1;
+            padding: 20px;
+        }
+
+        footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .image-container {
+            margin-bottom: 20px;
+        }
+        
+        .image-container img {
+            display: block;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .fullscreen img {
+            max-width: 90%;
+            max-height: 90%;
+        }
+
+        .language-switcher {
+            margin: 10px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .language-switcher button {
+            margin-left: 10px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        function setLanguage(lang) {
+            localStorage.setItem('language', lang);
+            applyLanguage();
+        }
+
+        function applyLanguage() {
+            const lang = localStorage.getItem('language') || 'en';
+            if (lang === 'ro') {
+                document.getElementById('page-title').textContent = 'Tutorial despre XSS Reflected (Formular de Autentificare) în bWAPP';
+                document.querySelector('h1').textContent = 'Tutorial despre XSS Reflected (Formular de Autentificare) în bWAPP';
+                document.querySelector('h2:nth-of-type(1)').textContent = '1. Configurarea Mediului';
+                document.querySelector('p:nth-of-type(1)').textContent = 'Pentru acest tutorial, veți avea nevoie de:';
+                document.querySelector('ul li:nth-of-type(1)').textContent = 'bWAPP: o aplicație web vulnerabilă pentru practici de securitate.';
+                document.querySelector('ul li:nth-of-type(2)').textContent = 'Google Chrome sau un alt browser web.';
+                document.querySelector('h2:nth-of-type(2)').textContent = '2. Accesarea bWAPP';
+                document.querySelector('p:nth-of-type(2)').innerHTML = 'Deschideți bWAPP într-un browser web:<br>URL: <code>http://localhost/bWAPP/login.php</code>';
+                document.querySelector('p:nth-of-type(3)').innerHTML = 'Conectați-vă cu numele de utilizator și parola implicite.<br> bee și bug';
+                document.querySelector('h2:nth-of-type(3)').textContent = '3. Navigarea la Vulnerabilitate';
+                document.querySelector('p:nth-of-type(4)').textContent = 'Selectați opțiunea XSS - Reflected (Login Form) din lista vulnerabilităților din bWAPP.';
+                document.querySelector('h2:nth-of-type(4)').textContent = '4. Înțelegerea Formularului de Autentificare';
+                document.querySelector('p:nth-of-type(5)').textContent = 'Formularul de autentificare așteaptă un nume de utilizator și o parolă. Creditele invalide vor declanșa un mesaj de eroare.';
+                document.querySelector('h2:nth-of-type(5)').textContent = '5. Testarea XSS';
+                document.querySelector('p:nth-of-type(6)').textContent = 'Introduceți un script simplu în câmpul de autentificare pentru a testa vulnerabilitățile XSS.';
+                document.querySelector('p:nth-of-type(7)').innerHTML = 'Exemplu de payload: <pre>&lt;script&gt;alert(\'Hacked\')&lt;/script&gt;</pre>';
+                document.querySelector('h2:nth-of-type(6)').textContent = '6. Observarea Rezultatelor';
+                document.querySelector('p:nth-of-type(8)').textContent = 'Observați cum scriptul este executat și apare o casetă de alertă.';
+                document.querySelector('h2:nth-of-type(7)').textContent = '7. Analizarea Sursă a Paginii';
+                document.querySelector('p:nth-of-type(9)').textContent = 'Faceți clic dreapta pe pagină și selectați "Vizualizați sursa paginii" pentru a analiza codul.';
+                document.querySelector('h2:nth-of-type(8)').textContent = '8. Înțelegerea Vulnerabilității';
+                document.querySelector('p:nth-of-type(10)').textContent = 'Vulnerabilitatea XSS există deoarece inputul utilizatorului este reflectat în pagină fără sanitizare corespunzătoare.';
+                document.querySelector('p:nth-of-type(11)').textContent = 'Funcția eval() în JavaScript, care este folosită pentru a evalua codul reprezentat ca șir, poate fi exploatată dacă nu este gestionată corect.';
+                document.querySelector('p:nth-of-type(12)').innerHTML = 'Exemplu: <code>eval(\'alert("Hacked")\')</code>';
+                document.querySelector('h2:nth-of-type(9)').textContent = '9. Confirmarea Resubmiterii Formularului';
+                document.querySelector('p:nth-of-type(13)').textContent = 'Dacă întâmpinați eroarea "Confirm Form Resubmission", înseamnă că datele formularului trebuie retransmise. Acest lucru se întâmplă dacă reîncărcați pagina după trimiterea unui formular.';
+                document.querySelector('h2:nth-of-type(10)').textContent = '10. Testarea cu Nume de Utilizatori Diferite';
+                document.querySelector('p:nth-of-type(14)').textContent = 'Introduceți diverse nume de utilizator și parole pentru a vedea cum răspunde aplicația. De exemplu, folosind "admin" ca nume de utilizator și "password" ca parolă pentru a verifica dacă datele de acreditare sunt valide.';
+                document.querySelector('h2:nth-of-type(11)').textContent = '11. Explorarea Injecției SQL';
+                document.querySelector('p:nth-of-type(15)').textContent = 'Încercați să introduceți un payload de injecție SQL pentru a vedea dacă aplicația este vulnerabilă. De exemplu:';
+                document.querySelector('p:nth-of-type(16)').innerHTML = 'Payload: <pre>\' OR 1=1; --</pre>';
+                document.querySelector('h2:nth-of-type(12)').textContent = '12. Combinarea XSS și SQL Injection';
+                document.querySelector('p:nth-of-type(17)').textContent = 'Combinați tehnicile XSS și SQL injection pentru a efectua atacuri mai sofisticate. De exemplu:';
+                document.querySelector('p:nth-of-type(18)').innerHTML = 'Payload: <pre>\' OR 1=1; --&lt;script&gt;alert("Hacking")&lt;/script&gt;</pre>';
+                document.querySelector('h2:nth-of-type(13)').textContent = '13. Utilizarea Payload-urilor Codificate';
+                document.querySelector('p:nth-of-type(19)').textContent = 'Codificați payload-ul XSS pentru a evita detectarea și a trece peste filtre. De exemplu:';
+                document.querySelector('p:nth-of-type(20)').innerHTML = 'Payload original: <pre>\'1=1;&lt;script&gt;alert("Hacked")&lt;/script&gt;</pre>';
+                document.querySelector('p:nth-of-type(21)').innerHTML = 'Payload codificat: <pre>%3Cscript%3Ealert%28%22Hacked%22%29%3C/script%3E</pre>';
+                document.querySelector('h2:nth-of-type(14)').textContent = 'Concluzie';
+                document.querySelector('p:nth-of-type(22)').textContent = 'Prin acest tutorial, ați învățat cum să identificați și să exploatați o vulnerabilitate XSS Reflected (Formular de Autentificare) în bWAPP. Ați folosit scripturi simple pentru a testa vulnerabilitățile și ați analizat sursa paginii pentru a înțelege problemele de bază.';
+                document.querySelector('p:nth-of-type(23)').textContent = 'Este esențial să practicați astfel de atacuri în medii controlate pentru a vă îmbunătăți abilitățile de securitate și pentru a proteja mai bine aplicațiile web împotriva acestor vulnerabilități.';
+                document.querySelector('footer p').textContent = '© 2024 Site-ul meu. Toate drepturile rezervate.';
+            } else {
+                document.getElementById('page-title').textContent = 'Tutorial on XSS Reflected (Login Form) in bWAPP';
+                document.querySelector('h1').textContent = 'Tutorial on XSS Reflected (Login Form) in bWAPP';
+                document.querySelector('h2:nth-of-type(1)').textContent = '1. Setting Up the Environment';
+                document.querySelector('p:nth-of-type(1)').textContent = 'For this tutorial, you will need:';
+                document.querySelector('ul li:nth-of-type(1)').textContent = 'bWAPP: a vulnerable web application for security practice.';
+                document.querySelector('ul li:nth-of-type(2)').textContent = 'Google Chrome or another web browser.';
+                document.querySelector('h2:nth-of-type(2)').textContent = '2. Accessing bWAPP';
+                document.querySelector('p:nth-of-type(2)').innerHTML = 'Open bWAPP in a web browser:<br>URL: <code>http://localhost/bWAPP/login.php</code>';
+                document.querySelector('p:nth-of-type(3)').innerHTML = 'Log in with the default username and password.<br> bee and bug';
+                document.querySelector('h2:nth-of-type(3)').textContent = '3. Navigating to the Vulnerability';
+                document.querySelector('p:nth-of-type(4)').textContent = 'Select the XSS - Reflected (Login Form) option from the list of vulnerabilities in bWAPP.';
+                document.querySelector('h2:nth-of-type(4)').textContent = '4. Understanding the Login Form';
+                document.querySelector('p:nth-of-type(5)').textContent = 'The login form expects a username and password. Invalid credentials will trigger an error message.';
+                document.querySelector('h2:nth-of-type(5)').textContent = '5. Testing XSS';
+                document.querySelector('p:nth-of-type(6)').textContent = 'Enter a simple script into the login field to test for XSS vulnerabilities.';
+                document.querySelector('p:nth-of-type(7)').innerHTML = 'Example payload: <pre>&lt;script&gt;alert(\'Hacked\')&lt;/script&gt;</pre>';
+                document.querySelector('h2:nth-of-type(6)').textContent = '6. Observing the Results';
+                document.querySelector('p:nth-of-type(8)').textContent = 'Notice how the script is executed and an alert box is displayed.';
+                document.querySelector('h2:nth-of-type(7)').textContent = '7. Analyzing the Page Source';
+                document.querySelector('p:nth-of-type(9)').textContent = 'Right-click on the page and select "View Page Source" to analyze the code.';
+                document.querySelector('h2:nth-of-type(8)').textContent = '8. Understanding the Vulnerability';
+                document.querySelector('p:nth-of-type(10)').textContent = 'The XSS vulnerability exists because user input is reflected in the page without proper sanitization.';
+                document.querySelector('p:nth-of-type(11)').textContent = 'The eval() function in JavaScript, which is used to evaluate code represented as a string, can be exploited if not handled correctly.';
+                document.querySelector('p:nth-of-type(12)').innerHTML = 'Example: <code>eval(\'alert("Hacked")\')</code>';
+                document.querySelector('h2:nth-of-type(9)').textContent = '9. Confirming Form Resubmission';
+                document.querySelector('p:nth-of-type(13)').textContent = 'If you encounter the "Confirm Form Resubmission" error, it means the form data needs to be resent. This happens if you reload the page after a form submission.';
+                document.querySelector('h2:nth-of-type(10)').textContent = '10. Testing with Different Usernames';
+                document.querySelector('p:nth-of-type(14)').textContent = 'Enter various usernames and passwords to see how the application responds. For instance, using "admin" as the username and "password" as the password to check if the credentials are valid.';
+                document.querySelector('h2:nth-of-type(11)').textContent = '11. Exploring SQL Injection';
+                document.querySelector('p:nth-of-type(15)').textContent = 'Try entering an SQL injection payload to see if the application is vulnerable. For example:';
+                document.querySelector('p:nth-of-type(16)').innerHTML = 'Payload: <pre>\' OR 1=1; --</pre>';
+                document.querySelector('h2:nth-of-type(12)').textContent = '12. Combining XSS and SQL Injection';
+                document.querySelector('p:nth-of-type(17)').textContent = 'Combine XSS and SQL injection techniques to perform more sophisticated attacks. For example:';
+                document.querySelector('p:nth-of-type(18)').innerHTML = 'Payload: <pre>\' OR 1=1; --&lt;script&gt;alert("Hacking")&lt;/script&gt;</pre>';
+                document.querySelector('h2:nth-of-type(13)').textContent = '13. Using Encoded Payloads';
+                document.querySelector('p:nth-of-type(19)').textContent = 'Encode the XSS payload to avoid detection and bypass filters. For example:';
+                document.querySelector('p:nth-of-type(20)').innerHTML = 'Original payload: <pre>\'1=1;&lt;script&gt;alert("Hacked")&lt;/script&gt;</pre>';
+                document.querySelector('p:nth-of-type(21)').innerHTML = 'Encoded payload: <pre>%3Cscript%3Ealert%28%22Hacked%22%29%3C/script%3E</pre>';
+                document.querySelector('h2:nth-of-type(14)').textContent = 'Conclusion';
+                document.querySelector('p:nth-of-type(22)').textContent = 'Through this tutorial, you have learned how to identify and exploit an XSS Reflected (Login Form) vulnerability in bWAPP. You used simple scripts to test for vulnerabilities and analyzed the page source to understand the underlying issues.';
+                document.querySelector('p:nth-of-type(23)').textContent = 'It is crucial to practice such attacks in controlled environments to improve your security skills and better protect web applications against these vulnerabilities.';
+                document.querySelector('footer p').textContent = '© 2024 My Website. All rights reserved.';
+            }
+        }
+
+        function openFullscreen(img) {
+            var fullscreenContainer = document.getElementById('fullscreenContainer');
+            var fullscreenImage = document.getElementById('fullscreenImage');
+            fullscreenImage.src = img.src;
+            fullscreenContainer.style.display = 'flex';
+        }
+
+        function closeFullscreen() {
+            var fullscreenContainer = document.getElementById('fullscreenContainer');
+            fullscreenContainer.style.display = 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', applyLanguage);
+    </script>
+</head>
+<body>
+    <div class="language-switcher">
+        <button onclick="setLanguage('en')">English</button>
+        <button onclick="setLanguage('ro')">Română</button>
+    </div>
+    <main>
+        <h1>Tutorial on XSS Reflected (Login Form) in bWAPP</h1>
+
+        <h2>1. Setting Up the Environment</h2>
+        <p>For this tutorial, you will need:</p>
+        <ul>
+            <li><strong>bWAPP</strong>: a vulnerable web application for security practice.</li>
+            <li><strong>Google Chrome</strong> or another web browser.</li>
+        </ul>
+
+        <h2>2. Accessing bWAPP</h2>
+        <p><strong>Open bWAPP in a web browser:</strong></p>
+        <p>URL: <code>http://localhost/bWAPP/login.php</code></p>
+        <p>Log in with the default username and password.<br> bee and bug</p>
+        
+        <div class="image-container">
+            <img src="LogForm1.png" alt="bWAPP Login" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 1: Open bWAPP and navigate to the login page.</p>
+        </div>
+
+        <h2>3. Navigating to the Vulnerability</h2>
+        <p>Select the XSS - Reflected (Login Form) option from the list of vulnerabilities in bWAPP.</p>
+
+        <div class="image-container">
+            <img src="LogForm2.png" alt="Select Vulnerability" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 2: Select the XSS - Reflected (Login Form) vulnerability.</p>
+        </div>
+
+        <h2>4. Understanding the Login Form</h2>
+        <p>The login form expects a username and password. Invalid credentials will trigger an error message.</p>
+
+        <div class="image-container">
+            <img src="LogForm3.png" alt="Login Form" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 3: The login form for the XSS Reflected (Login Form) vulnerability.</p>
+        </div>
+
+        <h2>5. Testing XSS</h2>
+        <p>Enter a simple script into the login field to test for XSS vulnerabilities.</p>
+        <p>Example payload: <pre>&lt;script&gt;alert('Hacked')&lt;/script&gt;</pre></p>
+
+        <div class="image-container">
+            <img src="LogForm4.png" alt="Entering XSS Payload" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 4: Enter the XSS payload into the login field.</p>
+            <img src="LogForm5.png" alt="Triggering XSS" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 5: Submit the form to trigger the XSS payload.</p>
+        </div>
+
+        <h2>6. Observing the Results</h2>
+        <p>Notice how the script is executed and an alert box is displayed.</p>
+
+        <div class="image-container">
+            <img src="LogForm6.png" alt="XSS Alert" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 6: The XSS payload triggers an alert box.</p>
+        </div>
+
+        <h2>7. Analyzing the Page Source</h2>
+        <p>Right-click on the page and select "View Page Source" to analyze the code.</p>
+
+        <div class="image-container">
+            <img src="LogForm7.png" alt="View Page Source" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 7: Viewing the page source to understand the vulnerability.</p>
+        </div>
+
+        <h2>8. Understanding the Vulnerability</h2>
+        <p>The XSS vulnerability exists because user input is reflected in the page without proper sanitization.</p>
+        <p>The eval() function in JavaScript, which is used to evaluate code represented as a string, can be exploited if not handled correctly.</p>
+        <p>Example: <code>eval('alert("Hacked")')</code></p>
+
+        <div class="image-container">
+            <img src="LogForm8.png" alt="Explanation of Eval Function" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 8: Explanation of the eval() function in JavaScript.</p>
+            <img src="LogForm9.png" alt="Eval Function Example" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 9: Example of using the eval() function.</p>
+        </div>
+
+        <h2>9. Confirming Form Resubmission</h2>
+        <p>If you encounter the "Confirm Form Resubmission" error, it means the form data needs to be resent. This happens if you reload the page after a form submission.</p>
+
+        <div class="image-container">
+            <img src="LogForm10.png" alt="Confirm Form Resubmission" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 10: Confirm Form Resubmission error message.</p>
+            <img src="LogForm11.png" alt="Confirm Form Resubmission Continue" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 11: Click "Continue" to resubmit the form data.</p>
+        </div>
+
+        <h2>10. Testing with Different Usernames</h2>
+        <p>Enter various usernames and passwords to see how the application responds. For instance, using "admin" as the username and "password" as the password to check if the credentials are valid.</p>
+
+        <div class="image-container">
+            <img src="LogForm12.png" alt="Testing with Admin Credentials" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 12: Testing with "admin" as the username and "password" as the password.</p>
+            <img src="LogForm13.png" alt="Invalid Credentials Message" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 13: The application shows "Invalid credentials!" message.</p>
+        </div>
+
+        <h2>11. Exploring SQL Injection</h2>
+        <p>Try entering an SQL injection payload to see if the application is vulnerable. For example:</p>
+        <p>Payload: <pre>' OR 1=1; --</pre></p>
+
+        <div class="image-container">
+            <img src="LogForm14.png" alt="SQL Injection Payload" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 14: Entering an SQL injection payload in the login field.</p>
+            <img src="LogForm15.png" alt="SQL Error Message" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 15: The application displays an SQL error message, indicating it is vulnerable.</p>
+        </div>
+
+        <h2>12. Combining XSS and SQL Injection</h2>
+        <p>Combine XSS and SQL injection techniques to perform more sophisticated attacks. For example:</p>
+        <p>Payload: <pre>' OR 1=1; --&lt;script&gt;alert("Hacking")&lt;/script&gt;</pre></p>
+
+        <div class="image-container">
+            <img src="LogForm16.png" alt="Combined XSS and SQL Injection" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 16: Entering a combined XSS and SQL injection payload.</p>
+            <img src="LogForm17.png" alt="Combined Attack Result" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 17: The combined attack triggers an alert box and displays an SQL error message.</p>
+        </div>
+
+        <h2>13. Using Encoded Payloads</h2>
+        <p>Encode the XSS payload to avoid detection and bypass filters. For example:</p>
+        <p>Original payload: <pre>'1=1;&lt;script&gt;alert("Hacked")&lt;/script&gt;</pre></p>
+        <p>Encoded payload: <pre>%3Cscript%3Ealert%28%22Hacked%22%29%3C/script%3E</pre></p>
+
+        <div class="image-container">
+            <img src="LogForm18.png" alt="Encoded Payload" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 18: Entering an encoded XSS payload.</p>
+            <img src="LogForm19.png" alt="Encoded Payload Result" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 19: The encoded payload triggers an alert box.</p>
+        </div>
+
+        <h2>Conclusion</h2>
+        <p>Through this tutorial, you have learned how to identify and exploit an XSS Reflected (Login Form) vulnerability in bWAPP. You used simple scripts to test for vulnerabilities and analyzed the page source to understand the underlying issues.</p>
+        <p>It is crucial to practice such attacks in controlled environments to improve your security skills and better protect web applications against these vulnerabilities.</p>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 My Website. All rights reserved.</p>
+    </footer>
+
+    <div id="fullscreenContainer" class="fullscreen" style="display: none;" ondblclick="closeFullscreen()">
+        <img id="fullscreenImage" src="" alt="">
+    </div>
+
+    <script>
+        function openFullscreen(img) {
+            var fullscreenContainer = document.getElementById('fullscreenContainer');
+            var fullscreenImage = document.getElementById('fullscreenImage');
+            fullscreenImage.src = img.src;
+            fullscreenContainer.style.display = 'flex';
+        }
+
+        function closeFullscreen() {
+            var fullscreenContainer = document.getElementById('fullscreenContainer');
+            fullscreenContainer.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
