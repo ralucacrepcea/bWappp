@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Burp Suite XSS Testing Tutorial</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        main {
+            flex: 1;
+            padding: 20px;
+        }
+
+        footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .image-container {
+            margin-bottom: 20px;
+        }
+        
+        .image-container img {
+            display: block;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .fullscreen img {
+            max-width: 90%;
+            max-height: 90%;
+        }
+
+        .language-switcher {
+            margin: 10px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .language-switcher button {
+            margin-left: 10px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        function setLanguage(lang) {
+            localStorage.setItem('language', lang);
+            applyLanguage();
+        }
+
+        function applyLanguage() {
+            const lang = localStorage.getItem('language') || 'en';
+            if (lang === 'ro') {
+                document.getElementById('page-title').textContent = 'Tutorial de Testare XSS cu Burp Suite';
+                document.querySelector('h1').textContent = 'Tutorial de Testare XSS cu Burp Suite';
+                document.querySelectorAll('h2')[0].textContent = 'Pasul 1: Deschideți Burp Suite și Accesați fila Proxy';
+                document.querySelectorAll('p')[0].textContent = 'Acțiune: Porniți Burp Suite și navigați la fila "Proxy".';
+                document.querySelectorAll('h2')[1].textContent = 'Pasul 2: Utilizați Browserul Incorporat al Burp';
+                document.querySelectorAll('p')[1].textContent = 'Acțiune: Selectați "Open Browser" sub "Use Burp\'s embedded browser". Aceasta va deschide un browser Chromium preconfigurat cu setările proxy deja configurate.';
+                document.querySelectorAll('h2')[2].textContent = 'Pasul 3: Navigați la Website-ul Țintă';
+                document.querySelectorAll('p')[2].textContent = 'Acțiune: În browserul nou deschis, introduceți URL-ul site-ului pe care doriți să-l testați (de exemplu, aplicația web țintă).';
+                document.querySelectorAll('h2')[3].textContent = 'Pasul 4: Identificați Pagina Țintă';
+                document.querySelectorAll('p')[3].textContent = 'Acțiune: După ce website-ul se încarcă, identificați pagina sau parametrul țintă pe care doriți să-l testați.';
+                document.querySelectorAll('h2')[4].textContent = 'Pasul 5: Capturați Cererea HTTP';
+                document.querySelectorAll('p')[4].textContent = 'Acțiune: Cu funcția "Intercept" activată în Burp Suite, efectuați o acțiune pe website care va trimite o cerere HTTP.';
+                document.querySelectorAll('h2')[5].textContent = 'Pasul 6: Trimiteți Cererea la Repeater';
+                document.querySelectorAll('p')[5].textContent = 'Acțiune: Faceți clic dreapta pe cererea HTTP interceptată și selectați "Send to Repeater".';
+                document.querySelectorAll('h2')[6].textContent = 'Pasul 7: Modificați Cererea HTTP';
+                document.querySelectorAll('p')[6].textContent = 'Acțiune: În fila Repeater, localizați câmpul "User-Agent" în anteturile cererii și modificați acest câmp pentru a injecta date personalizate.';
+                document.querySelectorAll('h2')[7].textContent = 'Pasul 8: Verificați Modificarea';
+                document.querySelectorAll('p')[7].textContent = 'Acțiune: După modificarea câmpului User-Agent, trimiteți cererea din nou și observați răspunsul.';
+                document.querySelectorAll('h2')[8].textContent = 'Pasul 9: Realizați Injecția XSS';
+                document.querySelectorAll('p')[8].textContent = 'Acțiune: Pentru teste mai avansate, puteți încerca să injectați un script XSS simplu.';
+                document.querySelectorAll('h2')[9].textContent = 'Pasul 10: Confirmați Execuția XSS';
+                document.querySelectorAll('p')[9].textContent = 'Acțiune: Dacă scriptul este executat, aceasta confirmă prezența unei vulnerabilități XSS în aplicație.';
+                document.querySelectorAll('h2')[10].textContent = 'Pasul 11: Arătați Răspunsul în Browser';
+                document.querySelectorAll('p')[10].textContent = 'Acțiune: După modificarea cererii în Repeater, faceți clic dreapta și alegeți "Show response in browser".';
+                document.querySelectorAll('h2')[11].textContent = 'Pasul 12: Copiați URL-ul Generat';
+                document.querySelectorAll('p')[11].textContent = 'Acțiune: Burp Suite va genera un URL pe care îl puteți copia și lipi într-un browser configurat să folosească Burp ca proxy.';
+                document.querySelectorAll('h2')[12].textContent = 'Pasul 13: Lipiți URL-ul în Browser';
+                document.querySelectorAll('p')[12].textContent = 'Acțiune: Deschideți browserul și lipiți URL-ul copiat în bara de adrese.';
+                document.querySelectorAll('h2')[13].textContent = 'Pasul 14: Observați Execuția XSS';
+                document.querySelectorAll('p')[13].textContent = 'Acțiune: Dacă payload-ul XSS este executat cu succes, ar trebui să vedeți o casetă de alertă.';
+                document.querySelectorAll('h2')[14].textContent = 'Pasul 15: Schimbați Nivelul de Securitate în bWAPP';
+                document.querySelectorAll('p')[14].textContent = 'Acțiune: Reveniți la bWAPP și schimbați nivelul de securitate la "medium".';
+                document.querySelectorAll('h2')[15].textContent = 'Pasul 16: Utilizați Proxy-ul Burp cu Noile Setări de Securitate';
+                document.querySelectorAll('p')[15].textContent = 'Acțiune: Cu nivelul de securitate setat la mediu, reveniți la Proxy-ul Burp și deschideți din nou browserul.';
+                document.querySelectorAll('h2')[16].textContent = 'Pasul 17: Trimiteți Noua Cerere la Repeater';
+                document.querySelectorAll('p')[16].textContent = 'Acțiune: Interceptați noua cerere cu setările de securitate actualizate și trimiteți-o la Repeater.';
+                document.querySelectorAll('h2')[17].textContent = 'Pasul 18: Modificați Noua Cerere și Observați Rezultatele';
+                document.querySelectorAll('p')[17].textContent = 'Acțiune: Modificați din nou cererea în Repeater și observați cum setările de securitate medii afectează răspunsul.';
+                document.querySelectorAll('h2')[18].textContent = 'Pasul 19: Lipiți URL-ul și Confirmați Execuția';
+                document.querySelectorAll('p')[18].textContent = 'Acțiune: Lipiți din nou URL-ul generat în browser și confirmați dacă payload-ul XSS este executat sub setările de securitate medii.';
+                document.querySelectorAll('h2')[19].textContent = 'Pasul 20: Observațiile Finale';
+                document.querySelectorAll('p')[19].textContent = 'Acțiune: Analizați diferențele de comportament între setările de securitate scăzute și medii în bWAPP și rezumați constatările.';
+                document.querySelectorAll('footer p')[0].textContent = '© 2024 Site-ul meu. Toate drepturile rezervate.';
+            } else {
+                document.getElementById('page-title').textContent = 'Burp Suite XSS Testing Tutorial';
+                document.querySelector('h1').textContent = 'Burp Suite XSS Testing Tutorial';
+                document.querySelectorAll('h2')[0].textContent = 'Step 1: Open Burp Suite and Access the Proxy Tab';
+                document.querySelectorAll('p')[0].textContent = 'Action: Start Burp Suite and navigate to the "Proxy" tab.';
+                document.querySelectorAll('h2')[1].textContent = 'Step 2: Use Burp\'s Embedded Browser';
+                document.querySelectorAll('p')[1].textContent = 'Action: Select "Open Browser" under "Use Burp\'s embedded browser".';
+                document.querySelectorAll('h2')[2].textContent = 'Step 3: Navigate to Your Target Website';
+                document.querySelectorAll('p')[2].textContent = 'Action: In the newly opened browser, type in the URL of the website you want to test.';
+                document.querySelectorAll('h2')[3].textContent = 'Step 4: Identify the Target Page';
+                document.querySelectorAll('p')[3].textContent = 'Action: Once the website loads, identify the target page or parameter you want to test.';
+                document.querySelectorAll('h2')[4].textContent = 'Step 5: Capture the HTTP Request';
+                document.querySelectorAll('p')[4].textContent = 'Action: With the "Intercept" feature turned on in Burp Suite, perform an action on the website that will send an HTTP request.';
+                document.querySelectorAll('h2')[5].textContent = 'Step 6: Send the Request to the Repeater';
+                document.querySelectorAll('p')[5].textContent = 'Action: Right-click on the intercepted HTTP request and choose "Send to Repeater".';
+                document.querySelectorAll('h2')[6].textContent = 'Step 7: Modify the HTTP Request';
+                document.querySelectorAll('p')[6].textContent = 'Action: In the Repeater tab, locate the "User-Agent" field in the request headers and modify it.';
+                document.querySelectorAll('h2')[7].textContent = 'Step 8: Verify the Modification';
+                document.querySelectorAll('p')[7].textContent = 'Action: After modifying the User-Agent field, send the request again and observe the response.';
+                document.querySelectorAll('h2')[8].textContent = 'Step 9: Perform XSS Injection';
+                document.querySelectorAll('p')[8].textContent = 'Action: For more advanced testing, try injecting a simple XSS script into the User-Agent field.';
+                document.querySelectorAll('h2')[9].textContent = 'Step 10: Confirm XSS Execution';
+                document.querySelectorAll('p')[9].textContent = 'Action: If the script is executed, it confirms the presence of an XSS vulnerability.';
+                document.querySelectorAll('h2')[10].textContent = 'Step 11: Show Response in Browser';
+                document.querySelectorAll('p')[10].textContent = 'Action: After modifying the request in Burp Suite\'s Repeater, right-click and choose "Show response in browser".';
+                document.querySelectorAll('h2')[11].textContent = 'Step 12: Copy the Generated URL';
+                document.querySelectorAll('p')[11].textContent = 'Action: Burp Suite will generate a URL that you can copy and paste into a browser.';
+                document.querySelectorAll('h2')[12].textContent = 'Step 13: Paste the URL in the Browser';
+                document.querySelectorAll('p')[12].textContent = 'Action: Open your browser and paste the copied URL into the address bar.';
+                document.querySelectorAll('h2')[13].textContent = 'Step 14: Observe the XSS Execution';
+                document.querySelectorAll('p')[13].textContent = 'Action: If the XSS payload is successfully executed, you should see an alert box or other indicators of script execution.';
+                document.querySelectorAll('h2')[14].textContent = 'Step 15: Change Security Level in bWAPP';
+                document.querySelectorAll('p')[14].textContent = 'Action: Go back to bWAPP and change the security level to "medium".';
+                document.querySelectorAll('h2')[15].textContent = 'Step 16: Use the Burp Proxy with New Security Settings';
+                document.querySelectorAll('p')[15].textContent = 'Action: With the security level set to medium, go back to Burp Suite\'s Proxy and open the browser again.';
+                document.querySelectorAll('h2')[16].textContent = 'Step 17: Send the New Request to Repeater';
+                document.querySelectorAll('p')[16].textContent = 'Action: Intercept the new request with the updated security settings and send it to the Repeater.';
+                document.querySelectorAll('h2')[17].textContent = 'Step 18: Modify the New Request and Observe Results';
+                document.querySelectorAll('p')[17].textContent = 'Action: Modify the request again in the Repeater and observe how the medium security settings affect the response.';
+                document.querySelectorAll('h2')[18].textContent = 'Step 19: Paste the URL and Confirm Execution';
+                document.querySelectorAll('p')[18].textContent = 'Action: Once again, paste the generated URL in your browser and confirm if the XSS payload is executed.';
+                document.querySelectorAll('h2')[19].textContent = 'Step 20: Final Observations';
+                document.querySelectorAll('p')[19].textContent = 'Action: Analyze the differences in behavior between low and medium security settings in bWAPP.';
+                document.querySelectorAll('footer p')[0].textContent = '© 2024 My Website. All rights reserved.';
+            }
+        }
+
+        function openFullscreen(img) {
+            var fullscreenContainer = document.getElementById('fullscreenContainer');
+            var fullscreenImage = document.getElementById('fullscreenImage');
+            fullscreenImage.src = img.src;
+            fullscreenContainer.style.display = 'flex';
+        }
+
+        function closeFullscreen() {
+            var fullscreenContainer = document.getElementById('fullscreenContainer');
+            fullscreenContainer.style.display = 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', applyLanguage);
+    </script>
+</head>
+<body>
+    <div class="language-switcher">
+        <button onclick="setLanguage('en')">English</button>
+        <button onclick="setLanguage('ro')">Română</button>
+    </div>
+    <main>
+        <h1>Burp Suite XSS Testing Tutorial</h1>
+        <h2>Step 1: Open Burp Suite and Access the Proxy Tab</h2>
+        <p><strong>Action:</strong> Start Burp Suite and navigate to the "Proxy" tab.</p>
+        <div class="image-container">
+            <img src="UserAgent1.png" alt="Burp Suite Proxy Tab" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 1: Burp Suite Proxy Tab</p>
+        </div>
+        <h2>Step 2: Use Burp's Embedded Browser</h2>
+        <p><strong>Action:</strong> Select "Open Browser" under "Use Burp's embedded browser". This will open a pre-configured Chromium browser with proxy settings already configured.</p>
+        <div class="image-container">
+            <img src="UserAgent2.png" alt="Use Burp's Embedded Browser" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 2: Use Burp's Embedded Browser</p>
+        </div>
+        <h2>Step 3: Navigate to Your Target Website</h2>
+        <p><strong>Action:</strong> In the newly opened browser, type in the URL of the website you want to test (e.g., your target web application).</p>
+        <div class="image-container">
+            <img src="UserAgent3.png" alt="Navigate to Target Website" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 3: Navigate to Target Website</p>
+        </div>
+        <h2>Step 4: Identify the Target Page</h2>
+        <p><strong>Action:</strong> Once the website loads, identify the target page or parameter you want to test. This could be a specific page or function like a user-agent field in a web application.</p>
+        <div class="image-container">
+            <img src="UserAgent4.png" alt="Identify Target Page" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 4: Identify Target Page</p>
+        </div>
+        <h2>Step 5: Capture the HTTP Request</h2>
+        <p><strong>Action:</strong> With the "Intercept" feature turned on in Burp Suite, perform an action on the website that will send an HTTP request (like refreshing the page or submitting a form). Burp Suite will intercept this request.</p>
+        <div class="image-container">
+            <img src="UserAgent5.png" alt="Capture HTTP Request" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 5: Capture HTTP Request</p>
+        </div>
+        <h2>Step 6: Send the Request to the Repeater</h2>
+        <p><strong>Action:</strong> Right-click on the intercepted HTTP request and choose "Send to Repeater". This will allow you to modify and resend the request multiple times.</p>
+        <div class="image-container">
+            <img src="UserAgent6.png" alt="Send Request to Repeater" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 6: Send Request to Repeater</p>
+        </div>
+        <h2>Step 7: Modify the HTTP Request</h2>
+        <p><strong>Action:</strong> In the Repeater tab, locate the "User-Agent" field in the request headers. Modify this field to inject custom data, such as your name or a simple alert script.</p>
+        <div class="image-container">
+            <img src="UserAgent7.png" alt="Modify HTTP Request" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 7: Modify HTTP Request</p>
+        </div>
+        <h2>Step 8: Verify the Modification</h2>
+        <p><strong>Action:</strong> After modifying the User-Agent field, send the request again and observe the response. Check if the modification is reflected in the response, such as seeing your custom data displayed on the page.</p>
+        <div class="image-container">
+            <img src="UserAgent8.png" alt="Verify Modification" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 8: Verify Modification</p>
+        </div>
+        <h2>Step 9: Perform XSS Injection</h2>
+        <p><strong>Action:</strong> For more advanced testing, you can try injecting a simple XSS script (e.g., <code>&lt;script&gt;alert('Hacked')&lt;/script&gt;</code>) into the User-Agent field. Resend the request and observe if the script executes in the response.</p>
+        <div class="image-container">
+            <img src="UserAgent9.png" alt="Perform XSS Injection" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 9: Perform XSS Injection</p>
+        </div>
+        <h2>Step 10: Confirm XSS Execution</h2>
+        <p><strong>Action:</strong> If the script is executed, it confirms the presence of an XSS vulnerability in the application. You should see an alert box or other signs of script execution in the response.</p>
+        <div class="image-container">
+            <img src="UserAgent10.png" alt="Confirm XSS Execution" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 10: Confirm XSS Execution</p>
+        </div>
+        <h2>Step 11: Show Response in Browser</h2>
+        <p><strong>Action:</strong> After modifying the request in Burp Suite's Repeater, right-click and choose "Show response in browser". This will allow you to view the response as it would appear in a browser.</p>
+        <div class="image-container">
+            <img src="UserAgent11.png" alt="Show Response in Browser" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 11: Show response in browser option in Burp Suite.</p>
+        </div>
+        <h2>Step 12: Copy the Generated URL</h2>
+        <p><strong>Action:</strong> Burp Suite will generate a URL that you can copy and paste into a browser configured to use Burp as its proxy. Copy the URL by clicking the "Copy" button.</p>
+        <div class="image-container">
+            <img src="UserAgent12.png" alt="Copy Generated URL" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 12: Copying the generated URL in Burp Suite.</p>
+        </div>
+        <h2>Step 13: Paste the URL in the Browser</h2>
+        <p><strong>Action:</strong> Open your browser and paste the copied URL into the address bar. This will display the page with the injected XSS payload.</p>
+        <div class="image-container">
+            <img src="UserAgent13.png" alt="Paste URL in Browser" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 13: Pasting the URL in the browser to view the XSS payload.</p>
+        </div>
+        <h2>Step 14: Observe the XSS Execution</h2>
+        <p><strong>Action:</strong> If the XSS payload is successfully executed, you should see an alert box or other indicators of script execution on the webpage.</p>
+        <div class="image-container">
+            <img src="UserAgent14.png" alt="XSS Payload Execution" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 14: XSS payload executed and displaying an alert box.</p>
+        </div>
+        <h2>Step 15: Change Security Level in bWAPP</h2>
+        <p><strong>Action:</strong> Go back to bWAPP and change the security level to "medium". This will help you understand how different security settings impact the success of the attack.</p>
+        <div class="image-container">
+            <img src="UserAgent15.png" alt="Change Security Level to Medium" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 15: Changing security level in bWAPP.</p>
+        </div>
+        <h2>Step 16: Use the Burp Proxy with New Security Settings</h2>
+        <p><strong>Action:</strong> With the security level set to medium, go back to Burp Suite's Proxy and open the browser again to intercept the requests and continue testing.</p>
+        <div class="image-container">
+            <img src="UserAgent16.png" alt="Using Burp Proxy with New Security Settings" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 16: Burp Proxy with security settings changed.</p>
+        </div>
+        <h2>Step 17: Send the New Request to Repeater</h2>
+        <p><strong>Action:</strong> Intercept the new request with the updated security settings and send it to the Repeater for further analysis and modification.</p>
+        <div class="image-container">
+            <img src="UserAgent17.png" alt="Send New Request to Repeater" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 17: Sending the request to Repeater in Burp Suite.</p>
+        </div>
+        <h2>Step 18: Modify the New Request and Observe Results</h2>
+        <p><strong>Action:</strong> Modify the request again in the Repeater and observe how the medium security settings affect the request's response and the XSS payload execution.</p>
+        <div class="image-container">
+            <img src="UserAgent18.png" alt="Modify New Request and Observe Results" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 18: Modifying the request and observing the results.</p>
+        </div>
+        <h2>Step 19: Paste the URL and Confirm Execution</h2>
+        <p><strong>Action:</strong> Once again, paste the generated URL in your browser and confirm if the XSS payload is executed under medium security settings.</p>
+        <div class="image-container">
+            <img src="UserAgent19.png" alt="Paste URL and Confirm Execution" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 19: Confirming XSS execution under medium security.</p>
+        </div>
+        <h2>Step 20: Final Observations</h2>
+        <p><strong>Action:</strong> Analyze the differences in behavior between low and medium security settings in bWAPP and summarize your findings.</p>
+        <div class="image-container">
+            <img src="UserAgent20.png" alt="Final Observations" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 20: Analyzing differences in behavior.</p>
+        </div>
+        <h2>Step 21: Open Burp Suite and Prepare the Request</h2>
+        <p><strong>Action:</strong> Open Burp Suite and set up the request by modifying the User-Agent header with a custom
+            string.</p>
+        <div class="image-container">
+            <img src="UserAgent21.png" alt="Burp Suite Request Setup" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 21: Burp Suite request setup with custom User-Agent.</p>
+        </div>
+        <h2>Step 22: Observe the Reflected Output</h2>
+        <p><strong>Action:</strong> Send the request and observe how the server reflects the User-Agent string in the response.
+        </p>
+        <div class="image-container">
+            <img src="UserAgent22.png" alt="Reflected Output in the Response" width="400" height="300"
+                ondblclick="openFullscreen(this)">
+            <p>Photo 22: Reflected User-Agent string in the response.</p>
+        </div>
+        <h2>Step 23: Inject a Script</h2>
+        <p><strong>Action:</strong> Modify the User-Agent string to inject a script tag and send the request again.</p>
+        <div class="image-container">
+            <img src="UserAgent23.png" alt="Injecting Script in User-Agent" width="400" height="300"
+                ondblclick="openFullscreen(this)">
+            <p>Photo 23: Injecting a script into the User-Agent string.</p>
+        </div>
+        <h2>Step 24: Analyze the Response</h2>
+        <p><strong>Action:</strong> Check if the script is executed by analyzing the server's response.</p>
+        <div class="image-container">
+            <img src="UserAgent24.png" alt="Script Injection Reflection" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 24: Reflection of the injected script in the response.</p>
+        </div>
+        <h2>Step 25: Show the Response in Browser</h2>
+        <p><strong>Action:</strong> Use the "Show response in browser" option to see how the payload behaves in a real browser.
+        </p>
+        <div class="image-container">
+            <img src="UserAgent25.png" alt="Show Response in Browser" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 25: Viewing the response in the browser.</p>
+        </div>
+        <h2>Step 26: Copy the Burp Suite URL</h2>
+        <p><strong>Action:</strong> Copy the URL provided by Burp Suite to view the response in a web browser.</p>
+        <div class="image-container">
+            <img src="UserAgent26.png" alt="Copy the Burp Suite URL" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 26: Copying the URL from Burp Suite.</p>
+        </div>
+        <h2>Step 27: View the Result in Browser</h2>
+        <p><strong>Action:</strong> Paste the copied URL into your browser and observe the reflected XSS payload.</p>
+        <div class="image-container">
+            <img src="UserAgent27.png" alt="View in Browser" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 27: Viewing the reflected XSS payload in the browser.</p>
+        </div>
+        <h2>Step 28: Modify the Script</h2>
+        <p><strong>Action:</strong> Modify the script payload to explore different attack vectors and send the request again.
+        </p>
+        <div class="image-container">
+            <img src="UserAgent28.png" alt="Modify Script" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 28: Modifying the script payload for further testing.</p>
+        </div>
+        <h2>Step 29: Test Again and Observe</h2>
+        <p><strong>Action:</strong> Send the modified request and analyze the server's response to verify the script's
+            execution.</p>
+        <div class="image-container">
+            <img src="UserAgent29.png" alt="Test Again" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 29: Testing the modified payload.</p>
+        </div>
+        <h2>Step 30: View the Final Output</h2>
+        <p><strong>Action:</strong> Use the browser to confirm that the final payload is reflected and executed as expected.</p>
+        <div class="image-container">
+            <img src="UserAgent30.png" alt="Final Output in Browser" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p>Photo 30: Viewing the final reflected XSS payload execution.</p>
+        </div>
+    </main>
+    <footer>
+        <p>© 2024 My Website. All rights reserved.</p>
+    </footer>
+    <div id="fullscreenContainer" class="fullscreen" style="display: none;" ondblclick="closeFullscreen()">
+        <img id="fullscreenImage" src="" alt="">
+    </div>
+    <script>
+        function openFullscreen(img) {
+            var fullscreenContainer = document.getElementById('fullscreenContainer');
+            var fullscreenImage = document.getElementById('fullscreenImage');
+            fullscreenImage.src = img.src;
+            fullscreenContainer.style.display = 'flex';
+        }
+
+        function closeFullscreen() {
+            var fullscreenContainer = document.getElementById('fullscreenContainer');
+            fullscreenContainer.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
