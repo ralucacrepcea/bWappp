@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XSS Tutorial - JSON</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        main {
+            flex: 1;
+            padding: 20px;
+        }
+
+        footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .image-container {
+            margin-bottom: 20px;
+        }
+        
+        .image-container img {
+            display: block;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .fullscreen img {
+            max-width: 90%;
+            max-height: 90%;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h2 id="additional-steps-title">Additional Steps for Reflected XSS using JSON</h2>
+
+        <h3 id="execution-title">Step-by-Step Execution:</h3>
+
+        <h4 id="step1-title">1. Open the XSS - Reflected (JSON) Page:</h4>
+        <p id="step1-url">URL: <code>http://localhost/bWAPP/xss_json.php</code></p>
+        <div class="image-container">
+            <img src="RefJson1.png" alt="Step 1" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h4 id="step2-title">2. Enter Data and Submit:</h4>
+        <p id="step2-text">Enter <code>Spiderman</code> as the movie title and click on the "Search" button. The application reflects the entered data on the page, indicating no results found.</p>
+        <div class="image-container">
+            <img src="RefJson2.png" alt="Step 2" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h4 id="step3-title">3. Inject XSS Payload:</h4>
+        <p id="step3-text">Enter <code>&amp;lt;script&amp;gt;alert(&#39;Hacked&#39;)&amp;lt;/script&amp;gt;</code> as the movie title. Click on the "Search" button. The application reflects the injected payload, which gets executed in the browser.</p>
+        <div class="image-container">
+            <img src="RefJson3.png" alt="Step 3" width="400" height="300" ondblclick="openFullscreen(this)">
+            <img src="RefJson4.png" alt="Step 4" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h4 id="step4-title">4. Modify URL to Inject XSS Payload:</h4>
+        <p id="step4-text">Manually modify the URL to include the XSS payload:</p>
+        <code id="step4-code">http://localhost/bWAPP/xss_json.php?title=&amp;lt;script&amp;gt;alert(&#39;Hacked&#39;)&amp;lt;/script&amp;gt;&action=search</code>
+        <p id="step4-instruction">Press Enter. The application reflects the injected payload, which gets executed in the browser.</p>
+        <div class="image-container">
+            <img src="RefJson5.png" alt="Step 5" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h4 id="step5-title">5. Inspect the Injected Code:</h4>
+        <p id="step5-text">Right-click on the page and select "Inspect Element". Observe the injected payload in the page source.</p>
+        <div class="image-container">
+            <img src="RefJson6.png" alt="Step 6" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h4 id="step6-title">6. Adjusting the Payload:</h4>
+        <p id="step6-text">Enter <code>}};alert(&#39;Hacked&#39;)//</code> as the movie title. Click on the "Search" button. The application reflects the injected payload, which triggers a JavaScript alert in the browser.</p>
+        <div class="image-container">
+            <img src="RefJson7.png" alt="Step 7" width="400" height="300" ondblclick="openFullscreen(this)">
+            <img src="RefJson8.png" alt="Step 8" width="400" height="300" ondblclick="openFullscreen(this)">
+            <img src="RefJson9.png" alt="Step 9" width="400" height="300" ondblclick="openFullscreen(this)">
+            <img src="RefJson10.png" alt="Step 10" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h4 id="step7-title">7. View Page Source for Injected Code:</h4>
+        <p id="step7-text">Right-click on the page and select "View Page Source". Observe the source code that includes the injected payload.</p>
+        <div class="image-container">
+            <img src="RefJson11.png" alt="Step 11" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h4 id="step8-title">8. View Injected Code in Source:</h4>
+        <p id="step8-text">Inspect the page source to see how the injected payload is included in the JSON response.</p>
+        <div class="image-container">
+            <img src="RefJson12.png" alt="Step 12" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h4 id="step9-title">9. Modify URL to Test Another Payload:</h4>
+        <p id="step9-text">Manually modify the URL to include another variant of the XSS payload:</p>
+        <code id="step9-code">http://localhost/bWAPP/xss_json.php?title=%22]%7D%7D)%3Balert(&#39;Hacked&#39;)%3C/script>%3E&action=search</code>
+        <p id="step9-instruction">Press Enter. The application reflects the injected payload, which gets executed in the browser.</p>
+        <div class="image-container">
+            <img src="RefJson13.png" alt="Step 13" width="400" height="300" ondblclick="openFullscreen(this)">
+            <img src="RefJson14.png" alt="Step 14" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h4 id="step10-title">10. Inspect the JSON Response:</h4>
+        <p id="step10-text">Observe how the payload is reflected in the JSON response and how it gets executed.</p>
+        <div class="image-container">
+            <img src="RefJson15.png" alt="Step 15" width="400" height="300" ondblclick="openFullscreen(this)">
+            <img src="RefJson16.png" alt="Step 16" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2024 My Website. All rights reserved.</p>
+    </footer>
+
+    <div id="fullscreenContainer" class="fullscreen" style="display: none;" ondblclick="closeFullscreen()">
+        <img id="fullscreenImage" src="" alt="">
+    </div>
+
+    <script>
+        function openFullscreen(img) {
+            var fullscreenContainer = document.getElementById('fullscreenContainer');
+            var fullscreenImage = document.getElementById('fullscreenImage');
+            fullscreenImage.src = img.src;
+            fullscreenContainer.style.display = 'flex';
+        }
+
+        function closeFullscreen() {
+            var fullscreenContainer = document.getElementById('fullscreenContainer');
+            fullscreenContainer.style.display = 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var lang = localStorage.getItem('language') || 'en';
+            if (lang === 'ro') {
+                document.getElementById('additional-steps-title').textContent = 'Pași suplimentari pentru XSS reflectat folosind JSON';
+                document.getElementById('execution-title').textContent = 'Executare pas cu pas:';
+                document.getElementById('step1-title').textContent = '1. Deschideți pagina XSS - Reflected (JSON):';
+                document.getElementById('step1-url').textContent = 'URL: http://localhost/bWAPP/xss_json.php';
+                document.getElementById('step2-title').textContent = '2. Introduceți date și trimiteți:';
+                document.getElementById('step2-text').textContent = 'Introduceți "Spiderman" ca titlu de film și faceți clic pe butonul "Search". Aplicația reflectă datele introduse pe pagină, indicând că nu au fost găsite rezultate.';
+                document.getElementById('step3-title').textContent = '3. Injectați payload XSS:';
+                document.getElementById('step3-text').textContent = 'Introduceți &lt;script&gt;alert("Hacked")&lt;/script&gt; ca titlu de film. Faceți clic pe butonul "Search". Aplicația reflectă payload-ul injectat, care este executat în browser.';
+                document.getElementById('step4-title').textContent = '4. Modificați URL-ul pentru a injecta payload XSS:';
+                document.getElementById('step4-text').textContent = 'Modificați manual URL-ul pentru a include payload-ul XSS:';
+                document.getElementById('step4-code').textContent = 'http://localhost/bWAPP/xss_json.php?title=&lt;script&gt;alert("Hacked")&lt;/script&gt;&action=search';
+                document.getElementById('step4-instruction').textContent = 'Apăsați Enter. Aplicația reflectă payload-ul injectat, care este executat în browser.';
+                document.getElementById('step5-title').textContent = '5. Inspectați codul injectat:';
+                document.getElementById('step5-text').textContent = 'Faceți clic dreapta pe pagină și selectați "Inspect Element". Observați payload-ul injectat în sursa paginii.';
+                document.getElementById('step6-title').textContent = '6. Ajustarea payload-ului:';
+                document.getElementById('step6-text').textContent = 'Introduceți "}};alert("Hacked")//" ca titlu de film. Faceți clic pe butonul "Search". Aplicația reflectă payload-ul injectat, care declanșează o alertă JavaScript în browser.';
+                document.getElementById('step7-title').textContent = '7. Vizualizați sursa paginii pentru codul injectat:';
+                document.getElementById('step7-text').textContent = 'Faceți clic dreapta pe pagină și selectați "View Page Source". Observați codul sursă care include payload-ul injectat.';
+                document.getElementById('step8-title').textContent = '8. Vizualizați codul injectat în sursă:';
+                document.getElementById('step8-text').textContent = 'Inspectați sursa paginii pentru a vedea cum payload-ul injectat este inclus în răspunsul JSON.';
+                document.getElementById('step9-title').textContent = '9. Modificați URL-ul pentru a testa un alt payload:';
+                document.getElementById('step9-text').textContent = 'Modificați manual URL-ul pentru a include o altă variantă a payload-ului XSS:';
+                document.getElementById('step9-code').textContent = 'http://localhost/bWAPP/xss_json.php?title=%22]%7D%7D)%3Balert("Hacked")%3C/script>%3E&action=search';
+                document.getElementById('step9-instruction').textContent = 'Apăsați Enter. Aplicația reflectă payload-ul injectat, care este executat în browser.';
+                document.getElementById('step10-title').textContent = '10. Inspectați răspunsul JSON:';
+                document.getElementById('step10-text').textContent = 'Observați cum payload-ul este reflectat în răspunsul JSON și cum acesta este executat.';
+            }
+        });
+    </script>
+</body>
+</html>
