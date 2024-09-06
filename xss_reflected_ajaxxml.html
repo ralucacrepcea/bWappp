@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Tutorial on XSS Reflected AJAX/XML in bWAPP</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        main {
+            flex: 1;
+            padding: 20px;
+        }
+
+        footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .image-container {
+            margin-bottom: 20px;
+        }
+        
+        .image-container img {
+            display: block;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .fullscreen img {
+            max-width: 90%;
+            max-height: 90%;
+        }
+    </style>
+    <script>
+        function applyLanguage() {
+            const lang = localStorage.getItem('language') || 'en';
+            
+            if (lang === 'ro') {
+                document.getElementById('page-title').textContent = 'Tutorial pe XSS Reflected AJAX/XML în bWAPP';
+                document.querySelector('h2:nth-of-type(1)').textContent = '1. Configurarea mediului';
+                document.querySelector('p').innerHTML = 'Pentru acest tutorial, vom folosi:';
+                document.querySelector('li strong:nth-of-type(1)').textContent = 'bWAPP';
+                document.querySelector('li strong:nth-of-type(2)').textContent = 'Google Chrome și Internet Explorer';
+                document.querySelector('li strong:nth-of-type(3)').textContent = 'Instrumente online pentru codificarea HTML-ului';
+                document.querySelector('h2:nth-of-type(2)').textContent = '2. Exemple de bază';
+                document.querySelector('h3:nth-of-type(1)').textContent = '2.1. Introducerea textului simplu';
+                document.querySelector('h3:nth-of-type(2)').textContent = '2.2. Script simplu de alertă';
+                document.querySelector('h2:nth-of-type(3)').textContent = '3. Atacuri XSS mai avansate';
+                document.querySelector('h3:nth-of-type(3)').textContent = '3.1. Imagine cu eroare de script';
+                document.querySelector('h3:nth-of-type(4)').textContent = '3.2. Decodificarea folosind Mother Eff HTML Entities';
+                document.querySelector('h2:nth-of-type(4)').textContent = '4. Testare pe Internet Explorer';
+                document.querySelector('h3:nth-of-type(5)').textContent = '4.1. Introducerea unui script în IE';
+                document.querySelector('h2:nth-of-type(5)').textContent = 'Concluzie';
+            } else {
+                document.getElementById('page-title').textContent = 'Tutorial on XSS Reflected AJAX/XML using bWAPP';
+                document.querySelector('h2:nth-of-type(1)').textContent = '1. Setting Up the Environment';
+                document.querySelector('p').innerHTML = 'For this tutorial, we will use:';
+                document.querySelector('li strong:nth-of-type(1)').textContent = 'bWAPP';
+                document.querySelector('li strong:nth-of-type(2)').textContent = 'Google Chrome and Internet Explorer';
+                document.querySelector('li strong:nth-of-type(3)').textContent = 'Online tools for HTML encoding';
+                document.querySelector('h2:nth-of-type(2)').textContent = '2. Basic Examples';
+                document.querySelector('h3:nth-of-type(1)').textContent = '2.1. Entering Simple Text';
+                document.querySelector('h3:nth-of-type(2)').textContent = '2.2. Simple Alert Script';
+                document.querySelector('h2:nth-of-type(3)').textContent = '3. More Advanced XSS Attacks';
+                document.querySelector('h3:nth-of-type(3)').textContent = '3.1. Image with Script Error';
+                document.querySelector('h3:nth-of-type(4)').textContent = '3.2. Decoding using Mother Eff HTML Entities';
+                document.querySelector('h2:nth-of-type(4)').textContent = '4. Testing on Internet Explorer';
+                document.querySelector('h3:nth-of-type(5)').textContent = '4.1. Entering a Script in IE';
+                document.querySelector('h2:nth-of-type(5)').textContent = 'Conclusion';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', applyLanguage);
+    </script>
+</head>
+<body>
+    <main>
+        <h1 id="page-title">Tutorial on XSS Reflected AJAX/XML using bWAPP</h1>
+
+        <h2>1. Setting Up the Environment</h2>
+        <p>For this tutorial, we will use:</p>
+        <ul>
+            <li><strong>bWAPP</strong>: a vulnerable web application for security practices.</li>
+            <li><strong>Google Chrome</strong> and <strong>Internet Explorer</strong>: the browsers for testing.</li>
+            <li><strong>Online tools for HTML encoding</strong>:
+                <ul>
+                    <li><a href="https://emn178.github.io/online-tools/html_encode.html" target="_blank">emn178 HTML Encode</a></li>
+                    <li><a href="https://mothereff.in/html-entities" target="_blank">Mother Eff HTML Entities</a></li>
+                </ul>
+            </li>
+        </ul>
+
+        <h2>2. Basic Examples</h2>
+        <div class="image-container">
+            <img src="AjaxXml1.png" alt="Hacking Example" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+        <h3>2.1. Entering Simple Text</h3>
+        <p>Enter the following HTML text in bWAPP:</p>
+        <pre>&lt;b&gt;Hacking&lt;/b&gt;</pre>
+        <div class="image-container">
+            <img src="AjaxXml.2.png" alt="Hacking Example" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+        <p>Using <a href="https://emn178.github.io/online-tools/html_encode.html" target="_blank">emn178 HTML Encode</a>, encode the text:</p>
+        <pre>&lt;b&gt;Hacking&lt;/b&gt; -&gt; &amp;lt;b&amp;gt;Hacking&amp;lt;/b&amp;gt;</pre>
+        <p>Enter the encoded text in bWAPP. Notice that the text is displayed as formatted HTML.</p>
+        <div class="image-container">
+            <img src="AjaxXml.3.png" alt="Hacking Example" width="400" height="300" ondblclick="openFullscreen(this)">
+            <img src="AjaxXml.4.png" alt="Hacking Example" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h3>2.2. Simple Alert Script</h3>
+        <p>Enter the following alert script:</p>
+        <pre>&lt;script&gt;alert('Happy Hacking')&lt;/script&gt;</pre>
+        <div class="image-container">
+            <img src="AjaxXml.5.png" alt="Hacking Example" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+        <p>Encode the script using <a href="https://emn178.github.io/online-tools/html_encode.html" target="_blank">emn178 HTML Encode</a> and get:</p>
+        <div class="image-container">
+            <img src="AjaxXml.6.png" alt="Hacking Example" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+        <p>Enter the encoded text in bWAPP and notice that the script is executed, triggering the alert.</p>
+
+        <h2>3. More Advanced XSS Attacks</h2>
+        <h3>3.1. Image with Script Error</h3>
+        <p>Enter the following code to create an image that triggers an alert on error:</p>
+        <pre>&lt;img src=x onerror=alert(2)&gt;</pre>
+        <div class="image-container">
+            <img src="AjaxXml.7.png" alt="Hacking Example" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+        <p>Encode it using <a href="https://emn178.github.io/online-tools/html_encode.html" target="_blank">emn178 HTML Encode</a> and get:</p>
+        <pre>&lt;img src=x onerror=alert(2)&gt; -&gt; &amp;lt;img src=x onerror=alert(2)&amp;gt;</pre>
+        <p>Enter the encoded code in bWAPP and notice that the alert is triggered when the image loads.</p>
+        <div class="image-container">
+            <img src="AjaxXml.8.png" alt="Hacking Example" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h3>3.2. Decoding using Mother Eff HTML Entities</h3>
+        <p>Using <a href="https://mothereff.in/html-entities" target="_blank">Mother Eff HTML Entities</a>, enter the decoded code:</p>
+        <pre>&amp;lt;img src=x onerror=alert(2)&amp;gt;</pre>
+        <div class="image-container">
+            <img src="AjaxXml.9.png" alt="Hacking Example" width="400" height="300" ondblclick="openFullscreen(this)">
+            <img src="AjaxXml.10.png" alt="Hacking Example" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+        <p>Enter it in bWAPP:</p>
+        <pre>&lt;img src=x onerror=alert(2)&gt;</pre>
+        <p>The result will be the same.</p>
+
+        <h2>4. Testing on Internet Explorer</h2>
+        <h3>4.1. Entering a Script in IE</h3>
+        <p>For Internet Explorer, enter the following code:</p>
+        <pre>&amp;lt;img src=x onerror=alert(1)&amp;gt;</pre>
+        <p>Notice that an error will be triggered, and IE will need to be forcibly closed.</p>
+        <div class="image-container">
+            <img src="AjaxXml.11.png" alt="Decoded Code" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+        <p>Enter another code to observe the difference:</p>
+        <pre>&amp;lt;img src=x onerror=alert(5)&amp;gt;</pre>
+        <p>The difference will only be in the alert number.</p>
+        <div class="image-container">
+            <img src="AjaxXml.12.png" alt="Decoded Code" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h2>Conclusion</h2>
+        <p>Through this tutorial, you have learned how to perform a reflected XSS attack using AJAX/XML in bWAPP, both on Google Chrome and Internet Explorer. You used online tools for HTML encoding and decoding and observed the different behaviors of browsers when executing scripts.</p>
+        <p>It is important to understand and practice such attacks in controlled environments to improve your security skills and to better protect web applications against these vulnerabilities.</p>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 My Website. All rights reserved.</p>
+    </footer>
+
+    <div id="fullscreenContainer" class="fullscreen" style="display: none;" ondblclick="closeFullscreen()">
+        <img id="fullscreenImage" src="" alt="">
+    </div>
+
+    <script>
+        function openFullscreen(img) {
+            var fullscreenContainer = document.getElementById('fullscreenContainer');
+            var fullscreenImage = document.getElementById('fullscreenImage');
+            fullscreenImage.src = img.src;
+            fullscreenContainer.style.display = 'flex';
+        }
+
+        function closeFullscreen() {
+            var fullscreenContainer = document.getElementById('fullscreenContainer');
+            fullscreenContainer.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
