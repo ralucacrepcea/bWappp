@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XSS Tutorial</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        main {
+            flex: 1;
+            padding: 20px;
+        }
+
+        footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .image-container {
+            margin-bottom: 20px;
+        }
+        
+        .image-container img {
+            display: block;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .fullscreen img {
+            max-width: 90%;
+            max-height: 90%;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h2 id="intro-title">Introduction</h2>
+        <p id="intro-text">This tutorial demonstrates how to exploit a Cross-Site Scripting (XSS) vulnerability in the bWAPP (an intentionally vulnerable web application). We will specifically focus on reflected XSS attacks using both POST and GET methods.</p>
+
+        <h2 id="steps-title">Steps</h2>
+
+        <h3 id="step1-title">1. Accessing the XSS Vulnerability Page</h3>
+        <ul id="step1-text">
+            <li>Open the bWAPP application in a browser.</li>
+            <li>Navigate to the XSS (Reflected) vulnerability page.</li>
+        </ul>
+
+        <h3 id="step2-title">2. Setting the Security Level</h3>
+        <ul id="step2-text">
+            <li>Ensure the security level is set to <code>low</code> to easily exploit the vulnerability.</li>
+        </ul>
+
+        <h3 id="step3-title">3. Reflected XSS using POST Method</h3>
+        <h4 id="step3-subtitle1">Step-by-Step Execution:</h4>
+        <h4 id="step3-subtitle2">Open the XSS - Reflected (POST) Page:</h4>
+        <p id="step3-url">URL: <code>http://localhost/bWAPP/xss_post.php</code></p>
+        <div class="image-container">
+            <img src="RefPost1.png" alt="Step 1" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h4 id="step4-title">Enter Data and Submit:</h4>
+        <ul id="step4-text">
+            <li>Enter <code>dev</code> as both the first and last name.</li>
+            <li>Click on the "Go" button.</li>
+            <li>The application reflects the entered data on the page.</li>
+        </ul>
+        <div class="image-container">
+            <img src="RefPost2.png" alt="Step 2" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h4 id="step5-title">Inject XSS Payload:</h4>
+        <ul id="step5-text">
+            <li>Enter <code>&lt;h1&gt;Hacked&lt;/h1&gt;</code> as the first name.</li>
+            <li>Enter <code>dev</code> as the last name.</li>
+            <li>Click on the "Go" button.</li>
+            <li>The application reflects the injected payload, which gets executed in the browser.</li>
+        </ul>
+        <div class="image-container">
+            <img src="RefPost3.png" alt="Step 3" width="400" height="300" ondblclick="openFullscreen(this)">
+            <img src="RefPost4.png" alt="Step 4" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h3 id="step6-title">4. Reflected XSS using GET Method</h3>
+        <h4 id="step6-subtitle1">Step-by-Step Execution:</h4>
+
+        <h4 id="step6-subtitle2">Open the XSS - Reflected (GET) Page:</h4>
+        <p id="step6-url">URL: <code>http://localhost/bWAPP/xss_get.php</code></p>
+        <div class="image-container">
+            <img src="RefPost5.png" alt="Step 5" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h4 id="step7-title">Enter Data and Submit:</h4>
+        <ul id="step7-text">
+            <li>Enter <code>dev</code> as both the first and last name.</li>
+            <li>Click on the "Go" button.</li>
+            <li>The application reflects the entered data in the URL and on the page.</li>
+        </ul>
+        <div class="image-container">
+            <img src="RefPost6.png" alt="Step 6" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h4 id="step8-title">Inject XSS Payload:</h4>
+        <ul id="step8-text">
+            <li>Manually modify the URL to inject the XSS payload:</li>
+            <pre><code>http://localhost/bWAPP/xss_get.php?firstname=&lt;h1&gt;Hacked&lt;/h1&gt;&lastname=dev&form=submit</code></pre>
+            <li>Press Enter.</li>
+            <li>The application reflects the injected payload, which gets executed in the browser.</li>
+        </ul>
+        <div class="image-container">
+            <img src="RefPost7.png" alt="Step 7" width="400" height="300" ondblclick="openFullscreen(this)">
+            <img src="RefPost8.png" alt="Step 8" width="400" height="300" ondblclick="openFullscreen(this)">
+            <img src="RefPost9.png" alt="Step 9" width="400" height="300" ondblclick="openFullscreen(this)">
+            <img src="RefPost10.png" alt="Step 10" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h2 id="cont-title">Continuation: Demonstrating Cross-Site Scripting (XSS) Attack using bWAPP</h2>
+
+        <h3 id="add-steps-title">Additional Steps</h3>
+
+        <h3 id="post-alert-title">Reflected XSS using POST Method with Alert Box</h3>
+        <h4 id="post-alert-subtitle">Step-by-Step Execution:</h4>
+
+        <h4 id="post-alert-js">Injecting JavaScript Alert:</h4>
+        <ul id="post-alert-text">
+            <li>Enter <code>alert("Hacking XSS")&lt;/script&gt;</code> as the first name.</li>
+            <li>Enter <code>dev</code> as the last name.</li>
+            <li>Click on the "Go" button.</li>
+            <li>The application reflects the injected payload, which triggers a JavaScript alert in the browser.</li>
+        </ul>
+        <div class="image-container">
+            <img src="RefPost11.png" alt="Step 11" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h4 id="post-alert-another">Another Payload Injection:</h4>
+        <ul id="post-alert-another-text">
+            <li>Enter <code>dev</code> as the first name.</li>
+            <li>Enter <code>&lt;script&gt;alert("Hacking XSS")&lt;/script&gt;</code> as the last name.</li>
+            <li>Click on the "Go" button.</li>
+            <li>The application reflects the injected payload, which triggers a JavaScript alert in the browser.</li>
+        </ul>
+        <div class="image-container">
+            <img src="RefPost12.png" alt="Step 12" width="400" height="300" ondblclick="openFullscreen(this)">
+            <img src="RefPost13.png" alt="Step 13" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h3 id="security-level-title">Increasing the Security Level</h3>
+        <h4 id="security-level-subtitle">Step-by-Step Execution:</h4>
+
+        <h4 id="set-security-medium">Set Security Level to Medium:</h4>
+        <ul id="set-security-medium-text">
+            <li>Change the security level to <code>medium</code>.</li>
+        </ul>
+        <div class="image-container">
+            <img src="RefPost14.png" alt="Step 14" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h4 id="test-same-payload">Testing the Same Payload:</h4>
+        <ul id="test-same-payload-text">
+            <li>Enter <code>&lt;/script&gt;alert("Hacking XSS")&lt;/script&gt;</code> as the first name.</li>
+            <li>Enter <code>dev</code> as the last name.</li>
+            <li>Click on the "Go" button.</li>
+            <li>The application may have some filtering, but the injected payload could still trigger a JavaScript alert.</li>
+        </ul>
+        <div class="image-container">
+            <img src="RefPost15.png" alt="Step 15" width="400" height="300" ondblclick="openFullscreen(this)">
+            <img src="RefPost16.png" alt="Step 16" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h4 id="adjust-payload">Adjusting the Payload:</h4>
+        <ul id="adjust-payload-text">
+            <li>Enter <code>dev</code> as the first name.</li>
+            <li>Enter <code>&lt;script&gt;alert("Hacking XSS")&lt;/script&gt;</code> as the last name.</li>
+            <li>Click on the "Go" button.</li>
+            <li>The application reflects the injected payload, which triggers a JavaScript alert in the browser.</li>
+        </ul>
+        <div class="image-container">
+            <img src="RefPost17.png" alt="Step 17" width="400" height="300" ondblclick="openFullscreen(this)">
+            <img src="RefPost18.png" alt="Step 18" width="400" height="300" ondblclick="openFullscreen(this)">
+            <img src="RefPost19.png" alt="Step 19" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h2 id="cont-title-2">Continuation: Demonstrating Cross-Site Scripting (XSS) Attack using bWAPP</h2>
+
+        <h3 id="add-steps-title-2">Additional Steps</h3>
+
+        <h3 id="post-alert-medium-title">Reflected XSS using POST Method with Alert Box at Medium Security Level</h3>
+        <h4 id="post-alert-medium-subtitle">Step-by-Step Execution:</h4>
+
+        <h4 id="inject-js-medium">Injecting JavaScript Alert at Medium Security Level:</h4>
+        <ul id="inject-js-medium-text">
+            <li>Enter <code>&lt;/script&gt;alert("Hacking XSS")&lt;/script&gt;</code> as the first name.</li>
+            <li>Enter <code>dev</code> as the last name.</li>
+            <li>Click on the "Go" button.</li>
+            <li>The application reflects the injected payload, which triggers a JavaScript alert in the browser.</li>
+        </ul>
+        <div class="image-container">
+            <img src="RefPost20.png" alt="Step 20" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h4 id="another-payload-injection">Another Payload Injection:</h4>
+        <ul id="another-payload-injection-text">
+            <li>Enter <code>dev</code> as the first name.</li>
+            <li>Enter <code>&lt;script&gt;alert("Hacking XSS")&lt;/script&gt;</code> as the last name.</li>
+            <li>Click on the "Go" button.</li>
+            <li>The application reflects the injected payload, which triggers a JavaScript alert in the browser.</li>
+        </ul>
+        <div class="image-container">
+            <img src="RefPost21.png" alt="Step 21" width="400" height="300" ondblclick="openFullscreen(this)">
+            <img src="RefPost22.png" alt="Step 22" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 My Website. All rights reserved.</p>
+    </footer>
+
+    <div id="fullscreenContainer" class="fullscreen" style="display: none;" ondblclick="closeFullscreen()">
+        <img id="fullscreenImage" src="" alt="">
+    </div>
+
+    <script>
+        function openFullscreen(img) {
+            var fullscreenContainer = document.getElementById('fullscreenContainer');
+            var fullscreenImage = document.getElementById('fullscreenImage');
+            fullscreenImage.src = img.src;
+            fullscreenContainer.style.display = 'flex';
+        }
+
+        function closeFullscreen() {
+            var fullscreenContainer = document.getElementById('fullscreenContainer');
+            fullscreenContainer.style.display = 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var lang = localStorage.getItem('language') || 'en';
+            if (lang === 'ro') {
+                document.getElementById('intro-title').textContent = 'Introducere';
+                document.getElementById('intro-text').textContent = 'Acest tutorial demonstrează cum să exploatați o vulnerabilitate Cross-Site Scripting (XSS) în bWAPP (o aplicație web intenționat vulnerabilă). Ne vom concentra în mod specific pe atacurile XSS reflectate folosind metodele POST și GET.';
+                document.getElementById('steps-title').textContent = 'Pași';
+                document.getElementById('step1-title').textContent = '1. Accesarea Paginii cu Vulnerabilitatea XSS';
+                document.getElementById('step1-text').innerHTML = '<li>Deschideți aplicația bWAPP într-un browser.</li><li>Navigați la pagina de vulnerabilitate XSS (Reflected).</li>';
+                document.getElementById('step2-title').textContent = '2. Setarea Nivelului de Securitate';
+                document.getElementById('step2-text').innerHTML = '<li>Asigurați-vă că nivelul de securitate este setat la <code>low</code> pentru a exploata cu ușurință vulnerabilitatea.</li>';
+                document.getElementById('step3-title').textContent = '3. XSS Reflectat folosind Metoda POST';
+                document.getElementById('step3-subtitle1').textContent = 'Executarea Pas cu Pas:';
+                document.getElementById('step3-subtitle2').textContent = 'Deschideți Pagina XSS - Reflected (POST):';
+                document.getElementById('step3-url').textContent = 'URL: http://localhost/bWAPP/xss_post.php';
+                document.getElementById('step4-title').textContent = 'Introduceți Date și Trimiteți:';
+                document.getElementById('step4-text').innerHTML = '<li>Introduceți <code>dev</code> ca prenume și nume de familie.</li><li>Faceți clic pe butonul "Go".</li><li>Aplicația reflectă datele introduse pe pagină.</li>';
+                document.getElementById('step5-title').textContent = 'Injectați Payload XSS:';
+                document.getElementById('step5-text').innerHTML = '<li>Introduceți <code>&lt;h1&gt;Hacked&lt;/h1&gt;</code> ca prenume.</li><li>Introduceți <code>dev</code> ca nume de familie.</li><li>Faceți clic pe butonul "Go".</li><li>Aplicația reflectă payload-ul injectat, care este executat în browser.</li>';
+                document.getElementById('step6-title').textContent = '4. XSS Reflectat folosind Metoda GET';
+                document.getElementById('step6-subtitle1').textContent = 'Executarea Pas cu Pas:';
+                document.getElementById('step6-subtitle2').textContent = 'Deschideți Pagina XSS - Reflected (GET):';
+                document.getElementById('step6-url').textContent = 'URL: http://localhost/bWAPP/xss_get.php';
+                document.getElementById('step7-title').textContent = 'Introduceți Date și Trimiteți:';
+                document.getElementById('step7-text').innerHTML = '<li>Introduceți <code>dev</code> ca prenume și nume de familie.</li><li>Faceți clic pe butonul "Go".</li><li>Aplicația reflectă datele introduse în URL și pe pagină.</li>';
+                document.getElementById('step8-title').textContent = 'Injectați Payload XSS:';
+                document.getElementById('step8-text').innerHTML = '<li>Modificați manual URL-ul pentru a injecta payload-ul XSS:</li><pre><code>http://localhost/bWAPP/xss_get.php?firstname=&lt;h1&gt;Hacked&lt;/h1&gt;&lastname=dev&form=submit</code></pre><li>Apăsați Enter.</li><li>Aplicația reflectă payload-ul injectat, care este executat în browser.</li>';
+                document.getElementById('cont-title').textContent = 'Continuare: Demonstrarea unui Atac de Cross-Site Scripting (XSS) folosind bWAPP';
+                document.getElementById('add-steps-title').textContent = 'Pași Suplimentari';
+                document.getElementById('post-alert-title').textContent = 'XSS Reflectat folosind Metoda POST cu Alertă JavaScript';
+                document.getElementById('post-alert-subtitle').textContent = 'Executarea Pas cu Pas:';
+                document.getElementById('post-alert-js').textContent = 'Injectarea unei Alarme JavaScript:';
+                document.getElementById('post-alert-text').innerHTML = '<li>Introduceți <code>alert("Hacking XSS")&lt;/script&gt;</code> ca prenume.</li><li>Introduceți <code>dev</code> ca nume de familie.</li><li>Faceți clic pe butonul "Go".</li><li>Aplicația reflectă payload-ul injectat, care declanșează o alertă JavaScript în browser.</li>';
+                document.getElementById('post-alert-another').textContent = 'O Altă Injectare de Payload:';
+                document.getElementById('post-alert-another-text').innerHTML = '<li>Introduceți <code>dev</code> ca prenume.</li><li>Introduceți <code>&lt;script&gt;alert("Hacking XSS")&lt;/script&gt;</code> ca nume de familie.</li><li>Faceți clic pe butonul "Go".</li><li>Aplicația reflectă payload-ul injectat, care declanșează o alertă JavaScript în browser.</li>';
+                document.getElementById('security-level-title').textContent = 'Creșterea Nivelului de Securitate';
+                document.getElementById('security-level-subtitle').textContent = 'Executarea Pas cu Pas:';
+                document.getElementById('set-security-medium').textContent = 'Setați Nivelul de Securitate la Mediu:';
+                document.getElementById('set-security-medium-text').innerHTML = '<li>Schimbați nivelul de securitate la <code>mediu</code>.</li>';
+                document.getElementById('test-same-payload').textContent = 'Testarea Aceluiași Payload:';
+                document.getElementById('test-same-payload-text').innerHTML = '<li>Introduceți <code>&lt;/script&gt;alert("Hacking XSS")&lt;/script&gt;</code> ca prenume.</li><li>Introduceți <code>dev</code> ca nume de familie.</li><li>Faceți clic pe butonul "Go".</li><li>Aplicația poate avea unele filtre, dar payload-ul injectat ar putea declanșa în continuare o alertă JavaScript.</li>';
+                document.getElementById('adjust-payload').textContent = 'Ajustarea Payload-ului:';
+                document.getElementById('adjust-payload-text').innerHTML = '<li>Introduceți <code>dev</code> ca prenume.</li><li>Introduceți <code>&lt;script&gt;alert("Hacking XSS")&lt;/script&gt;</code> ca nume de familie.</li><li>Faceți clic pe butonul "Go".</li><li>Aplicația reflectă payload-ul injectat, care declanșează o alertă JavaScript în browser.</li>';
+                document.getElementById('cont-title-2').textContent = 'Continuare: Demonstrarea unui Atac de Cross-Site Scripting (XSS) folosind bWAPP';
+                document.getElementById('add-steps-title-2').textContent = 'Pași Suplimentari';
+                document.getElementById('post-alert-medium-title').textContent = 'XSS Reflectat folosind Metoda POST cu Alertă JavaScript la Nivel de Securitate Mediu';
+                document.getElementById('post-alert-medium-subtitle').textContent = 'Executarea Pas cu Pas:';
+                document.getElementById('inject-js-medium').textContent = 'Injectarea unei Alarme JavaScript la Nivel de Securitate Mediu:';
+                document.getElementById('inject-js-medium-text').innerHTML = '<li>Introduceți <code>&lt;/script&gt;alert("Hacking XSS")&lt;/script&gt;</code> ca prenume.</li><li>Introduceți <code>dev</code> ca nume de familie.</li><li>Faceți clic pe butonul "Go".</li><li>Aplicația reflectă payload-ul injectat, care declanșează o alertă JavaScript în browser.</li>';
+                document.getElementById('another-payload-injection').textContent = 'O Altă Injectare de Payload:';
+                document.getElementById('another-payload-injection-text').innerHTML = '<li>Introduceți <code>dev</code> ca prenume.</li><li>Introduceți <code>&lt;script&gt;alert("Hacking XSS")&lt;/script&gt;</code> ca nume de familie.</li><li>Faceți clic pe butonul "Go".</li><li>Aplicația reflectă payload-ul injectat, care declanșează o alertă JavaScript în browser.</li>';
+            }
+        });
+    </script>
+</body>
+</html>
