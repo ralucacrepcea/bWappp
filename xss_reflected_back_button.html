@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Tutorial on Exploiting XSS Reflected Back Button Vulnerability in bWAPP</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        main {
+            flex: 1;
+            padding: 20px;
+        }
+
+        footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .image-container {
+            margin-bottom: 20px;
+        }
+
+        .image-container img {
+            display: block;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .fullscreen img {
+            max-width: 90%;
+            max-height: 90%;
+        }
+
+        .language-switcher {
+            margin: 10px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .language-switcher button {
+            margin-left: 10px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        function setLanguage(lang) {
+            localStorage.setItem('language', lang);
+            applyLanguage();
+        }
+
+        function applyLanguage() {
+            const lang = localStorage.getItem('language') || 'en';
+            if (lang === 'ro') {
+                document.getElementById('page-title').textContent = 'Tutorial despre exploatarea vulnerabilității XSS Reflected Back Button în bWAPP';
+                document.querySelector('h1').textContent = 'Tutorial despre exploatarea vulnerabilității XSS Reflected Back Button în bWAPP';
+                document.querySelector('h2:nth-of-type(1)').textContent = '1. Configurarea mediului';
+                document.querySelector('p:nth-of-type(1)').textContent = 'Pentru acest tutorial, veți avea nevoie de:';
+                document.querySelector('li:nth-of-type(1) strong').textContent = 'bWAPP';
+                document.querySelector('li:nth-of-type(2) strong').textContent = 'Burp Suite';
+                document.querySelector('li:nth-of-type(3) strong').textContent = 'Google Chrome sau un alt browser web';
+                document.querySelector('h2:nth-of-type(2)').textContent = '2. Accesarea bWAPP';
+                document.querySelector('p:nth-of-type(2)').textContent = 'Deschideți bWAPP într-un browser web:';
+                document.querySelector('p:nth-of-type(3)').textContent = 'URL: ';
+                document.querySelector('h2:nth-of-type(3)').textContent = '3. Configurarea Burp Suite';
+                document.querySelector('h2:nth-of-type(4)').textContent = '4. Exploatarea Vulnerabilității';
+                document.querySelector('h3:nth-of-type(1)').textContent = '4.1. Identificarea Punctului de Injecție';
+                document.querySelector('h3:nth-of-type(2)').textContent = '4.2. Injectarea XSS';
+                document.querySelector('h2:nth-of-type(5)').textContent = '5. Observarea Rezultatelor';
+                document.querySelector('h2:nth-of-type(6)').textContent = 'Concluzie';
+                document.querySelector('footer p').textContent = '© 2024 Site-ul meu. Toate drepturile rezervate.';
+                document.querySelectorAll('.lang-en').forEach(el => el.style.display = 'none');
+                document.querySelectorAll('.lang-ro').forEach(el => el.style.display = 'block');
+            } else {
+                document.getElementById('page-title').textContent = 'Tutorial on Exploiting XSS Reflected Back Button Vulnerability in bWAPP';
+                document.querySelector('h1').textContent = 'Tutorial on Exploiting XSS Reflected Back Button Vulnerability in bWAPP';
+                document.querySelector('h2:nth-of-type(1)').textContent = '1. Setting Up the Environment';
+                document.querySelector('p:nth-of-type(1)').textContent = 'For this tutorial, you will need:';
+                document.querySelector('li:nth-of-type(1) strong').textContent = 'bWAPP';
+                document.querySelector('li:nth-of-type(2) strong').textContent = 'Burp Suite';
+                document.querySelector('li:nth-of-type(3) strong').textContent = 'Google Chrome or another web browser';
+                document.querySelector('h2:nth-of-type(2)').textContent = '2. Accessing bWAPP';
+                document.querySelector('p:nth-of-type(2)').textContent = 'Open bWAPP in a web browser:';
+                document.querySelector('p:nth-of-type(3)').textContent = 'URL: ';
+                document.querySelector('h2:nth-of-type(3)').textContent = '3. Setting Up Burp Suite';
+                document.querySelector('h2:nth-of-type(4)').textContent = '4. Exploiting the Vulnerability';
+                document.querySelector('h3:nth-of-type(1)').textContent = '4.1. Identifying the Injection Point';
+                document.querySelector('h3:nth-of-type(2)').textContent = '4.2. Injecting XSS';
+                document.querySelector('h2:nth-of-type(5)').textContent = '5. Observing Results';
+                document.querySelector('h2:nth-of-type(6)').textContent = 'Conclusion';
+                document.querySelector('footer p').textContent = '© 2024 My Website. All rights reserved.';
+                document.querySelectorAll('.lang-ro').forEach(el => el.style.display = 'none');
+                document.querySelectorAll('.lang-en').forEach(el => el.style.display = 'block');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', applyLanguage);
+    </script>
+</head>
+<body>
+    <div class="language-switcher">
+        <button onclick="setLanguage('en')">English</button>
+        <button onclick="setLanguage('ro')">Română</button>
+    </div>
+    <main>
+        <h1>Tutorial on Exploiting XSS Reflected Back Button Vulnerability in bWAPP</h1>
+
+        <h2>1. Setting Up the Environment</h2>
+        <p>For this tutorial, you will need:</p>
+        <ul>
+            <li><strong>bWAPP</strong>: a vulnerable web application for security practice.</li>
+            <li><strong>Burp Suite</strong>: a tool for intercepting and analyzing web traffic.</li>
+            <li><strong>Google Chrome</strong> or another web browser.</li>
+        </ul>
+
+        <h2>2. Accessing bWAPP</h2>
+        <p>Open bWAPP in a web browser:</p>
+        <p>URL: <code>http://localhost/bWAPP/login.php</code></p>
+        <p>Log in with the default username and password.</p>
+
+        <div class="image-container">
+            <img src="BackButton4.png" alt="bWAPP Login" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p class="lang-en">Right-click and then select 'View Page Source'.</p>
+            <p class="lang-ro" style="display: none;">Faceți clic dreapta și selectați 'Afișare sursă pagină'.</p>
+            <img src="BackButton2.png" alt="bWAPP Login" width="400" height="300" ondblclick="openFullscreen(this)">
+            <img src="BackButton3.png" alt="bWAPP Login" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p class="lang-en">This shows what the button does.</p>
+            <p class="lang-ro" style="display: none;">Aceasta arată ce face butonul.</p>
+            <img src="BackButton6.png" alt="bWAPP Login" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p class="lang-en">If you will press the back button you will be redirected here:</p>
+            <p class="lang-ro" style="display: none;">Dacă apăsați butonul de înapoi, veți fi redirecționat aici:</p>
+            <img src="BackButton5.png" alt="bWAPP Login" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h2>3. Setting Up Burp Suite</h2>
+        <p class="lang-en">Install and open Burp Suite:</p>
+        <p class="lang-ro" style="display: none;">Instalați și deschideți Burp Suite:</p>
+        <p class="lang-en">Launch Burp Suite and configure your browser to use Burp Suite as a proxy.</p>
+        <p class="lang-ro" style="display: none;">Lansați Burp Suite și configurați browserul să folosească Burp Suite ca proxy.</p>
+        <div class="image-container">
+            <img src="BackButton7.png" alt="Burp Suite Setup" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p class="lang-en">Press NEXT button</p>
+            <p class="lang-ro" style="display: none;">Apăsați butonul URMĂTOR</p>
+            <img src="BackButton8.png" alt="Burp Suite Setup" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p class="lang-en">Now press Start Burp</p>
+            <p class="lang-ro" style="display: none;">Acum apăsați Start Burp</p>
+            <img src="BackButton9.png" alt="Burp Suite Setup" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p class="lang-en">Wait until the application opens.</p>
+            <p class="lang-ro" style="display: none;">Așteptați până când aplicația se deschide.</p>
+            <img src="BackButton10.png" alt="Burp Suite Setup" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p class="lang-en">Press the Open Browser</p>
+            <p class="lang-ro" style="display: none;">Apăsați Open Browser</p>
+            <img src="BackButton11.png" alt="Burp Suite Setup" width="400" height="300" ondblclick="openFullscreen(this)">
+            <img src="BackButton12.png" alt="Burp Suite Setup" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p class="lang-en">Search: localhost/bwapp/login.php</p>
+            <p class="lang-ro" style="display: none;">Căutați: localhost/bwapp/login.php</p>
+            <img src="BackButton13.png" alt="Burp Suite Setup" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p class="lang-en">Now we need to have 'Intercept is ON'</p>
+            <p class="lang-ro" style="display: none;">Acum trebuie să avem 'Intercept is ON'</p>
+            <img src="BackButton14.png" alt="Burp Suite Setup" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h2>4. Exploiting the Vulnerability</h2>
+        <h3>4.1. Identifying the Injection Point</h3>
+        <p class="lang-en">In the page source, find the location where user input is reflected in the page without proper filtering.</p>
+        <p class="lang-ro" style="display: none;">În sursa paginii, găsiți locul unde inputul utilizatorului este reflectat în pagină fără filtrare corespunzătoare.</p>
+
+        <h3>4.2. Injecting XSS</h3>
+        <p class="lang-en">Enter an XSS payload into the input field to see how it is reflected on the page. For example:</p>
+        <p class="lang-ro" style="display: none;">Introduceți un payload XSS în câmpul de input pentru a vedea cum este reflectat pe pagină. De exemplu:</p>
+        <pre>&lt;script&gt;alert('Hacked')&lt;/script&gt;</pre>
+        <div class="image-container">
+            <p class="lang-en">Search for the word 'Hacked' on the Response part</p>
+            <p class="lang-ro" style="display: none;">Căutați cuvântul 'Hacked' în partea de Răspuns</p>
+            <img src="BackButton25.png" alt="XSS Injection" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p class="lang-en">On the left side, change the word 'hacked' to: &lt;script&gt;alert('Hacked')&lt;/script&gt;</p>
+            <p class="lang-ro" style="display: none;">În partea stângă, schimbați cuvântul 'hacked' în: &lt;script&gt;alert('Hacked')&lt;/script&gt;</p>
+            <img src="BackButton26.png" alt="XSS Injection" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p class="lang-en">It will automatically change on the right side as well.</p>
+            <p class="lang-ro" style="display: none;">Se va schimba automat și în partea dreaptă.</p>
+            <img src="BackButton27.png" alt="XSS Injection" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p class="lang-en">Right-click and then click on 'Show response in browser'</p>
+            <p class="lang-ro" style="display: none;">Faceți clic dreapta și apoi clic pe 'Arată răspunsul în browser'</p>
+            <img src="BackButton28.png" alt="XSS Injection" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p class="lang-en">Click on 'Copy' to copy the URL, we will need it later.</p>
+            <p class="lang-ro" style="display: none;">Faceți clic pe 'Copy' pentru a copia URL-ul, îl vom folosi mai târziu.</p>
+            <img src="BackButton29.png" alt="XSS Injection" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p class="lang-en">We need to turn it OFF</p>
+            <p class="lang-ro" style="display: none;">Trebuie să-l oprim</p>
+            <img src="BackButton30.png" alt="XSS Injection" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p class="lang-en">Search BurpSuite</p>
+            <p class="lang-ro" style="display: none;">Căutați BurpSuite</p>
+            <img src="BackButton32.png" alt="XSS Injection" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p class="lang-en">Open bWapp</p>
+            <p class="lang-ro" style="display: none;">Deschideți bWapp</p>
+            <img src="BackButton33.png" alt="XSS Injection" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p class="lang-en">Do the modification like in the picture</p>
+            <p class="lang-ro" style="display: none;">Faceți modificarea ca în imagine</p>
+            <img src="BackButton35.png" alt="XSS Injection" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p class="lang-en">Now right-click and then click on 'Request in browser'</p>
+            <p class="lang-ro" style="display: none;">Acum faceți clic dreapta și apoi clic pe 'Solicitare în browser'</p>
+            <img src="BackButton36.png" alt="XSS Injection" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+        <p class="lang-en">Observe that the payload is reflected on the page and executed, triggering the alert.</p>
+        <p class="lang-ro" style="display: none;">Observați că payload-ul este reflectat pe pagină și executat, declanșând alerta.</p>
+
+        <h2>5. Observing Results</h2>
+        <p class="lang-en">Review behavior:</p>
+        <p class="lang-ro" style="display: none;">Revizuiți comportamentul:</p>
+        <p class="lang-en">Note how the XSS payload is reflected and executed on the page after pressing the "Back" button.</p>
+        <p class="lang-ro" style="display: none;">Observați cum payload-ul XSS este reflectat și executat pe pagină după apăsarea butonului "Înapoi".</p>
+        <div class="image-container">
+            <img src="BackButton37.png" alt="Back Button" width="400" height="300" ondblclick="openFullscreen(this)">
+            <p class="lang-en">We can see the alert we made:</p>
+            <p class="lang-ro" style="display: none;">Putem vedea alerta pe care am creat-o:</p>
+            <img src="BackButton38.png" alt="Back Button" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h2>Conclusion</h2>
+        <p class="lang-en">Through this tutorial, you have learned how to exploit the XSS Reflected Back Button vulnerability in bWAPP. You used Burp Suite to intercept and analyze web traffic and observed the page's behavior when injecting XSS payloads.</p>
+        <p class="lang-ro" style="display: none;">Prin acest tutorial, ați învățat cum să exploatați vulnerabilitatea XSS Reflected Back Button în bWAPP. Ați folosit Burp Suite pentru a intercepta și analiza traficul web și ați observat comportamentul paginii la injectarea payload-urilor XSS.</p>
+        <p class="lang-en">It is crucial to practice such attacks in controlled environments to improve your security skills and better protect web applications against these vulnerabilities.</p>
+        <p class="lang-ro" style="display: none;">Este esențial să practicați astfel de atacuri în medii controlate pentru a vă îmbunătăți abilitățile de securitate și pentru a proteja mai bine aplicațiile web împotriva acestor vulnerabilități.</p>
+    </main>
+
+    <footer>
+        <p>© 2024 My Website. All rights reserved.</p>
+    </footer>
+
+    <div id="fullscreenContainer" class="fullscreen" style="display: none;" ondblclick="closeFullscreen()">
+        <img id="fullscreenImage" src="" alt="">
+    </div>
+
+    <script>
+        function openFullscreen(img) {
+            var fullscreenContainer = document.getElementById('fullscreenContainer');
+            var fullscreenImage = document.getElementById('fullscreenImage');
+            fullscreenImage.src = img.src;
+            fullscreenContainer.style.display = 'flex';
+        }
+
+        function closeFullscreen() {
+            var fullscreenContainer = document.getElementById('fullscreenContainer');
+            fullscreenContainer.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
