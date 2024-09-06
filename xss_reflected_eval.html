@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Tutorial on Exploiting XSS Reflected Eval Vulnerability in bWAPP</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        main {
+            flex: 1;
+            padding: 20px;
+        }
+
+        footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .image-container {
+            margin-bottom: 20px;
+        }
+
+        .image-container img {
+            display: block;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .fullscreen img {
+            max-width: 90%;
+            max-height: 90%;
+        }
+
+        .language-switcher {
+            margin: 10px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .language-switcher button {
+            margin-left: 10px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        function setLanguage(lang) {
+            localStorage.setItem('language', lang);
+            applyLanguage();
+        }
+
+        function applyLanguage() {
+            const lang = localStorage.getItem('language') || 'en';
+            if (lang === 'ro') {
+                document.getElementById('page-title').textContent = 'Tutorial despre exploatarea vulnerabilității XSS Reflected Eval în bWAPP';
+                document.querySelector('h1').textContent = 'Tutorial despre exploatarea vulnerabilității XSS Reflected Eval în bWAPP';
+                document.querySelector('h2:nth-of-type(1)').textContent = 'Pasul 1: Accesarea Paginii Vulnerabile';
+                document.querySelector('p:nth-of-type(1)').textContent = 'Navigați la Pagina Vulnerabilă:';
+                document.querySelector('p:nth-of-type(2)').textContent = 'Deschideți browserul și navigați la URL-ul: http://localhost/bwapp/xss_eval.php?date=Date().';
+                document.querySelector('p:nth-of-type(3)').textContent = 'Înțelegerea funcției `eval`:';
+                document.querySelector('p:nth-of-type(4)').textContent = 'Funcția `eval` în JavaScript este folosită pentru a evalua sau executa un șir de cod JavaScript.';
+                document.querySelector('h2:nth-of-type(2)').textContent = 'Pasul 2: Exploatarea Vulnerabilității';
+                document.querySelector('p:nth-of-type(5)').textContent = 'Modificați URL-ul pentru a injecta un payload XSS:';
+                document.querySelector('p:nth-of-type(6)').textContent = 'Schimbați URL-ul pentru a include un payload XSS. De exemplu: http://localhost/bwapp/xss_eval.php?date=alert(\'You have been Hacked!!\').';
+                document.querySelector('p:nth-of-type(7)').textContent = 'Observați Rezultatul:';
+                document.querySelector('p:nth-of-type(8)').textContent = 'Când URL-ul modificat este încărcat, caseta de alertă JavaScript este afișată cu mesajul "You have been Hacked!!".';
+                document.querySelector('p:nth-of-type(9)').textContent = 'Impactul Exploatării:';
+                document.querySelector('p:nth-of-type(10)').textContent = 'După alertă, puteți observa că valoarea parametrului `date` este acum `undefined`, ceea ce indică faptul că funcția `eval` a executat alerta în loc să proceseze funcția de dată.';
+                document.querySelector('h2:nth-of-type(3)').textContent = 'Explicația funcției `eval`';
+                document.querySelector('p:nth-of-type(11)').textContent = 'Funcția `eval` este folosită pentru a executa cod JavaScript reprezentat ca un șir de caractere.';
+                document.querySelector('p:nth-of-type(13)').textContent = 'Aspecte de Securitate:';
+                document.querySelector('li:nth-of-type(1)').textContent = '`eval` este periculos deoarece poate executa cod arbitrar, ducând la potențiale probleme de securitate cum ar fi XSS.';
+                document.querySelector('li:nth-of-type(2)').textContent = 'Este recomandat să evitați utilizarea funcției `eval` ori de câte ori este posibil și să folosiți alternative mai sigure.';
+                document.querySelector('h2:nth-of-type(4)').textContent = 'Concluzie';
+                document.querySelector('p:nth-of-type(14)').textContent = 'În acest tutorial, am demonstrat cum să exploatăm o vulnerabilitate XSS în bWAPP care utilizează funcția `eval`. Prin injectarea unui payload malițios în URL, am putut executa cod JavaScript arbitrar. Acest lucru subliniază pericolele utilizării funcției `eval` și importanța validării și igienizării inputului pentru a preveni astfel de vulnerabilități.';
+                document.querySelector('p:nth-of-type(15)').textContent = 'Notă Importantă: Efectuați întotdeauna astfel de activități într-un mediu controlat și cu autorizare corespunzătoare. Exploatarea vulnerabilităților fără permisiune este ilegală și neetică.';
+                document.querySelector('footer p').textContent = '© 2024 Site-ul meu. Toate drepturile rezervate.';
+            } else {
+                document.getElementById('page-title').textContent = 'Tutorial on Exploiting XSS Reflected Eval Vulnerability in bWAPP';
+                document.querySelector('h1').textContent = 'Tutorial on Exploiting XSS Reflected Eval Vulnerability in bWAPP';
+                document.querySelector('h2:nth-of-type(1)').textContent = 'Step 1: Access the Vulnerable Page';
+                document.querySelector('p:nth-of-type(1)').textContent = 'Navigate to the Vulnerable Page:';
+                document.querySelector('p:nth-of-type(2)').textContent = 'Open your browser and navigate to the URL: http://localhost/bwapp/xss_eval.php?date=Date().';
+                document.querySelector('p:nth-of-type(3)').textContent = 'Understand the `eval` Function:';
+                document.querySelector('p:nth-of-type(4)').textContent = 'The `eval` function in JavaScript is used to evaluate or execute a string of JavaScript code.';
+                document.querySelector('h2:nth-of-type(2)').textContent = 'Step 2: Exploiting the Vulnerability';
+                document.querySelector('p:nth-of-type(5)').textContent = 'Modify the URL to Inject an XSS Payload:';
+                document.querySelector('p:nth-of-type(6)').textContent = 'Change the URL to include an XSS payload. For example: http://localhost/bwapp/xss_eval.php?date=alert(\'You have been Hacked!!\').';
+                document.querySelector('p:nth-of-type(7)').textContent = 'Observe the Result:';
+                document.querySelector('p:nth-of-type(8)').textContent = 'When the modified URL is loaded, the JavaScript alert box is displayed with the message "You have been Hacked!!".';
+                document.querySelector('p:nth-of-type(9)').textContent = 'Impact of the Exploit:';
+                document.querySelector('p:nth-of-type(10)').textContent = 'After the alert, you can see that the `date` parameter\'s value is now `undefined`, which indicates that the `eval` function executed the alert instead of processing the date function.';
+                document.querySelector('h2:nth-of-type(3)').textContent = 'Explanation of the `eval` Function';
+                document.querySelector('p:nth-of-type(11)').textContent = 'The `eval` function is used to execute JavaScript code represented as a string.';
+                document.querySelector('p:nth-of-type(13)').textContent = 'Security Concerns:';
+                document.querySelector('li:nth-of-type(1)').textContent = '`eval` is dangerous because it can execute arbitrary code, leading to potential security issues like XSS.';
+                document.querySelector('li:nth-of-type(2)').textContent = 'It is recommended to avoid using `eval` whenever possible and use safer alternatives.';
+                document.querySelector('h2:nth-of-type(4)').textContent = 'Conclusion';
+                document.querySelector('p:nth-of-type(14)').textContent = 'In this tutorial, we demonstrated how to exploit an XSS vulnerability in bWAPP that uses the `eval` function. By injecting a malicious payload into the URL, we were able to execute arbitrary JavaScript code. This highlights the dangers of using `eval` and the importance of input validation and sanitization to prevent such vulnerabilities.';
+                document.querySelector('p:nth-of-type(15)').textContent = 'Important Note: Always perform such activities in a controlled environment and with proper authorization. Exploiting vulnerabilities without permission is illegal and unethical.';
+                document.querySelector('footer p').textContent = '© 2024 My Website. All rights reserved.';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', applyLanguage);
+    </script>
+</head>
+<body>
+    <div class="language-switcher">
+        <button onclick="setLanguage('en')">English</button>
+        <button onclick="setLanguage('ro')">Română</button>
+    </div>
+    <main>
+        <h1>Tutorial on Exploiting XSS Reflected Eval Vulnerability in bWAPP</h1>
+
+        <h2>Step 1: Access the Vulnerable Page</h2>
+        <p>Navigate to the Vulnerable Page:</p>
+        <p>Open your browser and navigate to the URL: <code>http://localhost/bwapp/xss_eval.php?date=Date()</code>.</p>
+        <div class="image-container">
+            <img src="Eval1.png" alt="Additional Testing" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <p>Understand the `eval` Function:</p>
+        <p>The `eval` function in JavaScript is used to evaluate or execute a string of JavaScript code.</p>
+        <div class="image-container">
+            <img src="Eval2.png" alt="Additional Testing" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h2>Step 2: Exploiting the Vulnerability</h2>
+        <p>Modify the URL to Inject an XSS Payload:</p>
+        <p>Change the URL to include an XSS payload. For example: <code>http://localhost/bwapp/xss_eval.php?date=alert('You have been Hacked!!')</code>.</p>
+        <div class="image-container">
+            <img src="Eval3.png" alt="Additional Testing" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <p>Observe the Result:</p>
+        <p>When the modified URL is loaded, the JavaScript alert box is displayed with the message "You have been Hacked!!".</p>
+        <div class="image-container">
+            <img src="Eval4.png" alt="Additional Testing" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <p>Impact of the Exploit:</p>
+        <p>After the alert, you can see that the `date` parameter's value is now `undefined`, which indicates that the `eval` function executed the alert instead of processing the date function.</p>
+        <div class="image-container">
+            <img src="Eval5.png" alt="Additional Testing" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h2>Explanation of the `eval` Function</h2>
+        <p>The `eval` function is used to execute JavaScript code represented as a string.</p>
+        <pre><code>eval("2 + 2"); // returns 4
+eval("alert('Hello!')"); // displays an alert with the message "Hello!"</code></pre>
+
+        <p>Security Concerns:</p>
+        <ul>
+            <li>`eval` is dangerous because it can execute arbitrary code, leading to potential security issues like XSS.</li>
+            <li>It is recommended to avoid using `eval` whenever possible and use safer alternatives.</li>
+        </ul>
+
+        <h2>Conclusion</h2>
+        <p>In this tutorial, we demonstrated how to exploit an XSS vulnerability in bWAPP that uses the `eval` function. By injecting a malicious payload into the URL, we were able to execute arbitrary JavaScript code. This highlights the dangers of using `eval` and the importance of input validation and sanitization to prevent such vulnerabilities.</p>
+        <p><strong>Important Note:</strong> Always perform such activities in a controlled environment and with proper authorization. Exploiting vulnerabilities without permission is illegal and unethical.</p>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 My Website. All rights reserved.</p>
+    </footer>
+
+    <div id="fullscreenContainer" class="fullscreen" style="display: none;" ondblclick="closeFullscreen()">
+        <img id="fullscreenImage" src="" alt="">
+    </div>
+
+    <script>
+        function openFullscreen(img) {
+            var fullscreenContainer = document.getElementById('fullscreenContainer');
+            var fullscreenImage = document.getElementById('fullscreenImage');
+            fullscreenImage.src = img.src;
+            fullscreenContainer.style.display = 'flex';
+        }
+
+        function closeFullscreen() {
+            var fullscreenContainer = document.getElementById('fullscreenContainer');
+            fullscreenContainer.style.display = 'none';
+        }
+    </script>
+</body>
+</html>

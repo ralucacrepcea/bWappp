@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Tutorial on Exploiting XSS Vulnerability</title>
+    <style>
+        img {
+            display: block;
+            margin: 20px 0;
+            transition: transform 0.2s ease;
+            cursor: pointer;
+        }
+        .fullscreen {
+            transform: scale(2);
+            cursor: zoom-out;
+        }
+        .language-switcher {
+            margin: 10px;
+            display: flex;
+            justify-content: flex-end;
+        }
+        .language-switcher button {
+            margin-left: 10px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        function setLanguage(lang) {
+            localStorage.setItem('language', lang);
+            applyLanguage();
+        }
+
+        function applyLanguage() {
+            const lang = localStorage.getItem('language') || 'en';
+            if (lang === 'ro') {
+                document.getElementById('page-title').textContent = 'Tutorial despre exploatarea vulnerabilității XSS';
+                document.querySelector('h1').textContent = 'Tutorial despre exploatarea vulnerabilității XSS';
+                document.querySelector('h2:nth-of-type(1)').textContent = 'Pasul 1: Intrați în Modul de Debug';
+                document.querySelector('p:nth-of-type(1)').textContent = 'Deschideți browserul web.';
+                document.querySelector('p:nth-of-type(2)').textContent = 'Navigați la pagina web unde doriți să injectați scriptul.';
+                document.querySelector('p:nth-of-type(3)').textContent = 'Faceți clic dreapta pe pagină și selectați "Inspectați" sau apăsați Ctrl+Shift+I pentru a deschide instrumentele pentru dezvoltatori.';
+                document.querySelector('p:nth-of-type(4)').textContent = 'Ar trebui să vedeți un panou care apare în partea de jos sau lateral a ecranului. Acesta este consola dezvoltatorului.';
+                document.querySelector('h2:nth-of-type(2)').textContent = 'Pasul 2: Vizualizați Sursa Paginii';
+                document.querySelector('p:nth-of-type(5)').textContent = 'În cadrul instrumentelor pentru dezvoltatori, găsiți fila "Elemente".';
+                document.querySelector('p:nth-of-type(6)').textContent = 'Această filă arată structura HTML a paginii.';
+                document.querySelector('p:nth-of-type(7)').textContent = 'Localizați secțiunea <head> a codului HTML.';
+                document.querySelector('h2:nth-of-type(3)').textContent = 'Pasul 3: Injectați Scriptul';
+                document.querySelector('p:nth-of-type(8)').textContent = 'Faceți clic pe secțiunea <head> pentru a o selecta.';
+                document.querySelector('p:nth-of-type(9)').textContent = 'Faceți clic dreapta și alegeți "Editați ca HTML" sau pur și simplu faceți dublu clic pentru a începe editarea codului HTML.';
+                document.querySelector('p:nth-of-type(10)').textContent = 'Introduceți următoarea etichetă de script:';
+                document.querySelector('h2:nth-of-type(4)').textContent = 'Pasul 4: Adăugați Eticheta de Închidere';
+                document.querySelector('p:nth-of-type(11)').textContent = 'Asigurați-vă că eticheta scriptului este închisă corect pentru a evita erorile de sintaxă.';
+                document.querySelector('h2:nth-of-type(5)').textContent = 'Pasul 5: Salvați și Vizualizați Alertele';
+                document.querySelector('p:nth-of-type(12)').textContent = 'Apăsați Ctrl+Enter pentru a salva modificările.';
+                document.querySelector('p:nth-of-type(13)').textContent = 'Reveniți la fereastra browserului unde pagina web este deschisă.';
+                document.querySelector('p:nth-of-type(14)').textContent = 'Ar trebui să vedeți o fereastră pop-up de alertă cu mesajul "Hacked".';
+                document.querySelector('h2:nth-of-type(6)').textContent = 'Pasul 6: Gestionarea Alertelor Multiple';
+                document.querySelector('p:nth-of-type(15)').textContent = 'Dacă sunt declanșate mai multe alerte, va trebui să apăsați butonul "X" pe fiecare alertă pentru a le închide.';
+                document.querySelector('p:nth-of-type(16)').textContent = 'Continuați să închideți alertele până când nu mai apar.';
+            } else {
+                document.getElementById('page-title').textContent = 'Tutorial on Exploiting XSS Vulnerability';
+                document.querySelector('h1').textContent = 'Tutorial on Exploiting XSS Vulnerability';
+                document.querySelector('h2:nth-of-type(1)').textContent = 'Step 1: Enter Debug Mode';
+                document.querySelector('p:nth-of-type(1)').textContent = 'Open your web browser.';
+                document.querySelector('p:nth-of-type(2)').textContent = 'Navigate to the web page where you want to inject the script.';
+                document.querySelector('p:nth-of-type(3)').textContent = 'Right-click on the page and select "Inspect" or press Ctrl+Shift+I to open the developer tools.';
+                document.querySelector('p:nth-of-type(4)').textContent = 'You should see a panel appear at the bottom or side of your screen. This is the developer console.';
+                document.querySelector('h2:nth-of-type(2)').textContent = 'Step 2: View Page Source';
+                document.querySelector('p:nth-of-type(5)').textContent = 'Within the developer tools, find the "Elements" tab.';
+                document.querySelector('p:nth-of-type(6)').textContent = 'This tab shows the HTML structure of the page.';
+                document.querySelector('p:nth-of-type(7)').textContent = 'Locate the <head> section of the HTML code.';
+                document.querySelector('h2:nth-of-type(3)').textContent = 'Step 3: Inject the Script';
+                document.querySelector('p:nth-of-type(8)').textContent = 'Click on the <head> section to select it.';
+                document.querySelector('p:nth-of-type(9)').textContent = 'Right-click and choose "Edit as HTML" or simply double-click to start editing the HTML code.';
+                document.querySelector('p:nth-of-type(10)').textContent = 'Introduce the following script tag:';
+                document.querySelector('h2:nth-of-type(4)').textContent = 'Step 4: Add Self-Closing Tag';
+                document.querySelector('p:nth-of-type(11)').textContent = 'Ensure the script tag is properly closed to avoid syntax errors.';
+                document.querySelector('h2:nth-of-type(5)').textContent = 'Step 5: Save and View the Alert';
+                document.querySelector('p:nth-of-type(12)').textContent = 'Press Ctrl+Enter to save the changes.';
+                document.querySelector('p:nth-of-type(13)').textContent = 'Switch back to the browser window where the web page is open.';
+                document.querySelector('p:nth-of-type(14)').textContent = 'You should see an alert pop-up with the message "Hacked".';
+                document.querySelector('h2:nth-of-type(6)').textContent = 'Step 6: Handling Multiple Alerts';
+                document.querySelector('p:nth-of-type(15)').textContent = 'If multiple alerts are triggered, you will need to press the "X" button on each alert to close them.';
+                document.querySelector('p:nth-of-type(16)').textContent = 'Continue closing the alerts until no more appear.';
+            }
+        }
+
+        function toggleFullscreen(element) {
+            if (element.classList.contains('fullscreen')) {
+                element.classList.remove('fullscreen');
+            } else {
+                element.classList.add('fullscreen');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', applyLanguage);
+    </script>
+</head>
+<body>
+    <div class="language-switcher">
+        <button onclick="setLanguage('en')">English</button>
+        <button onclick="setLanguage('ro')">Română</button>
+    </div>
+
+    <h1>Tutorial on Exploiting XSS Vulnerability</h1>
+
+    <h2>Step 1: Enter Debug Mode</h2>
+    <p>Open your web browser.</p>
+    <p>Navigate to the web page where you want to inject the script.</p>
+    <p>Right-click on the page and select "Inspect" or press <code>Ctrl+Shift+I</code> to open the developer tools.</p>
+    <p>You should see a panel appear at the bottom or side of your screen. This is the developer console.</p>
+    <img src="RefHref1.png" alt="Developer Console" width="400" height="300" ondblclick="toggleFullscreen(this)">
+
+    <h2>Step 2: View Page Source</h2>
+    <p>Within the developer tools, find the "Elements" tab.</p>
+    <p>This tab shows the HTML structure of the page.</p>
+    <p>Locate the <code>&lt;head&gt;</code> section of the HTML code.</p>
+    <img src="RefHref2.png" alt="Elements Tab" width="400" height="300" ondblclick="toggleFullscreen(this)">
+    <img src="RefHref3.png" alt="HTML Structure" width="400" height="300" ondblclick="toggleFullscreen(this)">
+
+    <h2>Step 3: Inject the Script</h2>
+    <p>Click on the <code>&lt;head&gt;</code> section to select it.</p>
+    <p>Right-click and choose "Edit as HTML" or simply double-click to start editing the HTML code.</p>
+    <p>Introduce the following script tag:</p>
+    <pre><code>&lt;script&gt;alert('Hacked')&lt;/script&gt;</code></pre>
+    <img src="RefHref4.png" alt="Edit HTML" width="400" height="300" ondblclick="toggleFullscreen(this)">
+
+    <h2>Step 4: Add Self-Closing Tag</h2>
+    <p>Ensure the script tag is properly closed to avoid syntax errors.</p>
+    <pre><code>&lt;script&gt;alert('Hacked')&lt;/script&gt;</code></pre>
+    <img src="RefHref8.png" alt="Script Tag" width="400" height="300" ondblclick="toggleFullscreen(this)">
+
+    <h2>Step 5: Save and View the Alert</h2>
+    <p>Press <code>Ctrl+Enter</code> to save the changes.</p>
+    <p>Switch back to the browser window where the web page is open.</p>
+    <p>You should see an alert pop-up with the message "Hacked".</p>
+    <img src="RefHref9.png" alt="Alert Pop-up" width="400" height="300" ondblclick="toggleFullscreen(this)">
+
+    <h2>Step 6: Handling Multiple Alerts</h2>
+    <p>If multiple alerts are triggered, you will need to press the "X" button on each alert to close them.</p>
+    <p>Continue closing the alerts until no more appear.</p>
+    <img src="RefHref10.png" alt="Closing Alerts" width="400" height="300" ondblclick="toggleFullscreen(this)">
+
+</body>
+</html>
