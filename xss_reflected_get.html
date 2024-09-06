@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XSS Tutorial</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        main {
+            flex: 1;
+            padding: 20px;
+        }
+
+        footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .image-container {
+            margin-bottom: 20px;
+        }
+        
+        .image-container img {
+            display: block;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .fullscreen img {
+            max-width: 90%;
+            max-height: 90%;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h2 id="intro-title">Introduction</h2>
+        <p id="intro-text">Welcome to the Cross-Site Scripting (XSS) tutorial.</p>
+        <h2 id="guide-title">Step-by-Step Guide</h2>
+        <h3 id="step1-title">Step 1: Access the XSS Vulnerability Page</h3>
+        <p id="step1-text">Open your browser and navigate to <code>http://localhost/bWAPP/xss_get.php</code>.</p>
+        <img src="RefGet1.png" alt="Step 1" width="400" height="300" ondblclick="openFullscreen(this)">
+        <h3 id="step2-title">Step 2: Submit Normal Input</h3>
+        <p id="step2-text">Enter a simple first and last name (e.g., "debu" and "debu") to see how normal input is processed.</p>
+        <img src="RefGet2.png" alt="Step 2" width="400" height="300" ondblclick="openFullscreen(this)">
+        <p>Click the "Go" button. The application processes the input and displays it back on the page.</p>
+        <img src="RefGet3.png" alt="Step 3" width="400" height="300" ondblclick="openFullscreen(this)">
+        <h3 id="step3-title">Step 3: Observe URL Structure</h3>
+        <p id="step3-text">Notice how the input values are reflected in the URL as query parameters.</p>
+        <img src="RefGet4.png" alt="Step 4" width="400" height="300" ondblclick="openFullscreen(this)">
+        <h3 id="step4-title">Step 4: Inject HTML Tags</h3>
+        <p id="step4-text">Modify the query parameters to include HTML tags. For example, change the first name to <code>&lt;b&gt;message&lt;/b&gt;</code> to see if HTML tags are rendered.</p>
+        <img src="RefGet5.png" alt="Step 5" width="400" height="300" ondblclick="openFullscreen(this)">
+        <p>The resulting page should display the injected HTML tags in the output, confirming that input is not properly sanitized.</p>
+        <img src="RefGet6.png" alt="Step 6" width="400" height="300" ondblclick="openFullscreen(this)">
+        <h3 id="step5-title">Step 5: Inject JavaScript Code</h3>
+        <p id="step5-text">Now, test injecting JavaScript code. Modify the URL to include <code>&lt;script&gt;alert('Hacked')&lt;/script&gt;</code> in one of the query parameters.</p>
+        <img src="RefGet7.png" alt="Step 7" width="400" height="300" ondblclick="openFullscreen(this)">
+        <p>The page should execute the JavaScript code and display an alert box.</p>
+        <img src="RefGet8.png" alt="Step 8" width="400" height="300" ondblclick="openFullscreen(this)">
+        <h3 id="step6-title">Step 6: Confirm the Vulnerability</h3>
+        <p id="step6-text">Finally, you can confirm the vulnerability by injecting various scripts or HTML codes to see how the application behaves. Here is another example:</p>
+        <img src="RefGet9.png" alt="Step 9" width="400" height="300" ondblclick="openFullscreen(this)">
+        <p>The reflected XSS vulnerability allows an attacker to inject malicious scripts that the victim’s browser will execute, potentially leading to data theft, session hijacking, and other malicious activities.</p>
+        <img src="RefGet10.png" alt="Final Step" width="400" height="300" ondblclick="openFullscreen(this)">
+        <h3 id="step7-title">Step 7: Setting Security Level to Medium</h3>
+        <p id="step7-text">Change the security level to "medium" and repeat the process to see if the application behavior changes.</p>
+        <img src="RefGet11.png" alt="Step 11" width="400" height="300" ondblclick="openFullscreen(this)">
+        <p>Enter normal input again to verify that basic functionality remains the same at a higher security level.</p>
+        <img src="RefGet12.png" alt="Step 12" width="400" height="300" ondblclick="openFullscreen(this)">
+        <h3 id="step8-title">Step 8: Injecting JavaScript Code Again</h3>
+        <p id="step8-text">Try injecting JavaScript code again with the higher security setting. Enter <code>&lt;script&gt;alert('Hacked')&lt;/script&gt;</code> in the query parameters.</p>
+        <img src="RefGet13.png" alt="Step 13" width="400" height="300" ondblclick="openFullscreen(this)">
+        <p>The page should still execute the injected JavaScript code and display an alert box, indicating that the medium security level still does not sanitize inputs properly.</p>
+        <img src="RefGet14.png" alt="Step 14" width="400" height="300" ondblclick="openFullscreen(this)">
+        <h3 id="step9-title">Step 9: Further Validation of Vulnerability</h3>
+        <p id="step9-text">Test by injecting another variant of the script to see if there are any changes in behavior or sanitization. Modify the URL to include <code>&lt;script&gt;alert('Hacked')&lt;/script&gt;</code>.</p>
+        <img src="RefGet15.png" alt="Step 15" width="400" height="300" ondblclick="openFullscreen(this)">
+        <p>The reflected XSS vulnerability persists, as evidenced by the alert box.</p>
+        <img src="RefGet16.png" alt="Step 16" width="400" height="300" ondblclick="openFullscreen(this)">
+    </main>
+    <footer>
+        <p>&copy; 2024 My Website. All rights reserved.</p>
+    </footer>
+    <div id="fullscreenContainer" class="fullscreen" style="display: none;" ondblclick="closeFullscreen()">
+        <img id="fullscreenImage" src="" alt="">
+    </div>
+    <script>
+        function openFullscreen(img) {
+            var fullscreenContainer = document.getElementById('fullscreenContainer');
+            var fullscreenImage = document.getElementById('fullscreenImage');
+            fullscreenImage.src = img.src;
+            fullscreenContainer.style.display = 'flex';
+        }
+
+        function closeFullscreen() {
+            var fullscreenContainer = document.getElementById('fullscreenContainer');
+            fullscreenContainer.style.display = 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var lang = localStorage.getItem('language') || 'en';
+            if (lang === 'ro') {
+                document.getElementById('intro-title').textContent = 'Introducere';
+                document.getElementById('intro-text').textContent = 'Bine ați venit la tutorialul despre Cross-Site Scripting (XSS).';
+                document.getElementById('guide-title').textContent = 'Ghid Pas cu Pas';
+                document.getElementById('step1-title').textContent = 'Pasul 1: Accesați Pagina Vulnerabilității XSS';
+                document.getElementById('step1-text').textContent = 'Deschideți browserul și navigați la <code>http://localhost/bWAPP/xss_get.php</code>.';
+                document.getElementById('step2-title').textContent = 'Pasul 2: Trimiteți o Intrare Normală';
+                document.getElementById('step2-text').textContent = 'Introduceți un nume simplu și un prenume (de exemplu, "debu" și "debu") pentru a vedea cum este procesată intrarea normală.';
+                document.getElementById('step3-title').textContent = 'Pasul 3: Observați Structura URL-ului';
+                document.getElementById('step3-text').textContent = 'Observați cum valorile de intrare sunt reflectate în URL ca parametri de interogare.';
+                document.getElementById('step4-title').textContent = 'Pasul 4: Injectați Etichete HTML';
+                document.getElementById('step4-text').textContent = 'Modificați parametrii de interogare pentru a include etichete HTML. De exemplu, schimbați numele în <code>&lt;b&gt;mesaj&lt;/b&gt;</code> pentru a vedea dacă etichetele HTML sunt randate.';
+                document.getElementById('step5-title').textContent = 'Pasul 5: Injectați Cod JavaScript';
+                document.getElementById('step5-text').textContent = 'Testați injectarea codului JavaScript. Modificați URL-ul pentru a include <code>&lt;script&gt;alert(\'Hacked\')&lt;/script&gt;</code> în unul dintre parametrii de interogare.';
+                document.getElementById('step6-title').textContent = 'Pasul 6: Confirmați Vulnerabilitatea';
+                document.getElementById('step6-text').textContent = 'Confirmați vulnerabilitatea injectând diverse scripturi sau coduri HTML pentru a vedea cum se comportă aplicația.';
+                document.getElementById('step7-title').textContent = 'Pasul 7: Setarea Nivelului de Securitate la Mediu';
+                document.getElementById('step7-text').textContent = 'Schimbați nivelul de securitate la "mediu" și repetați procesul pentru a vedea dacă comportamentul aplicației se schimbă.';
+                document.getElementById('step8-title').textContent = 'Pasul 8: Reîncercarea Injectării Codului JavaScript';
+                document.getElementById('step8-text').textContent = 'Încercați din nou injectarea codului JavaScript cu setarea de securitate mai ridicată.';
+                document.getElementById('step9-title').textContent = 'Pasul 9: Validarea Suplimentară a Vulnerabilității';
+                document.getElementById('step9-text').textContent = 'Testați prin injectarea unei alte variante a scriptului pentru a vedea dacă există schimbări în comportament.';
+            }
+        });
+    </script>
+</body>
+</html>
