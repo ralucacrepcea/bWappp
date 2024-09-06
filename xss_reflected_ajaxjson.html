@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial de Exploatare a Vulnerabilității XSS în bWAPP</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        main {
+            flex: 1;
+            padding: 20px;
+        }
+
+        footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .image-container {
+            margin-bottom: 20px;
+        }
+
+        .image-container img {
+            display: block;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .fullscreen img {
+            max-width: 90%;
+            max-height: 90%;
+        }
+    </style>
+</head>
+<body>
+    <div class="language-selector">
+        <select onchange="changeLanguage(this.value);">
+            <option value="ro">Română</option>
+            <option value="en">English</option>
+        </select>
+    </div>
+
+    <main>
+        <h1 id="title">Tutorial de Exploatare a Vulnerabilității XSS în bWAPP</h1>
+
+        <h2 id="step1-title">Pasul 1: Accesarea aplicației bWAPP</h2>
+        <p id="step1-desc"><strong>Deschideți bWAPP într-un browser web:</strong></p>
+        <p id="step1-url">URL: <code>http://localhost/bWAPP/xss_ajax_2-1.php</code></p>
+        <p id="step1-info">Aceasta este pagina principală unde puteți selecta diferite vulnerabilități de securitate pentru testare.</p>
+        <div class="image-container">
+            <img src="AjaxJson1.png" alt="Pasul 1" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h2 id="step2-title">Pasul 2: Configurarea Vulnerabilității</h2>
+        <p id="step2-desc"><strong>Selectați vulnerabilitatea XSS:</strong></p>
+        <p id="step2-info">Alegeți "Cross-Site Scripting - Reflected (JSON)" din meniul dropdown sub "Choose your bug" și faceți clic pe "Hack".</p>
+        <div class="image-container">
+            <img src="AjaxJson2.png" alt="Pasul 2" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <p id="step2-security"><strong>Setați nivelul de securitate:</strong></p>
+        <p id="step2-security-info">Asigurați-vă că nivelul de securitate este setat la "low". Acest lucru face ca vulnerabilitatea să fie mai ușor de exploatat.</p>
+        <p id="step2-json">Putem observa că diferența dintre metoda (JSON) și metoda (AJAX/JSON) este că la JSON, apare un buton de căutare, în timp ce la (AJAX/JSON), căutarea se efectuează imediat după introducerea textului.</p>
+        <div class="image-container">
+            <img src="AjaxJson3.png" alt="Pasul 3" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <h2 id="step3-title">Pasul 3: Efectuarea Exploatării</h2>
+        <p id="step3-desc"><strong>Căutați un film:</strong></p>
+        <p id="step3-ajax">Ne întoarcem la metoda (AJAX/JSON).</p>
+        <p id="step3-info">Pe pagina "XSS - Reflected (AJAX/JSON)", există un câmp de intrare pentru căutarea unui film. Acesta este locul unde veți injecta payload-ul XSS.</p>
+        <div class="image-container">
+            <img src="AjaxJson4.png" alt="Pasul 4" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+
+        <p id="step3-inject"><strong>Injectarea diferitelor payload-uri:</strong></p>
+        <p id="inject-text">Injecție de text simplu:</p>
+        <p id="input-spiderman">Input: <code>spiderman</code></p>
+        <div class="image-container">
+            <img src="AjaxJson5.png" alt="Pasul 5" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+        <p id="result-spiderman">Rezultat: <code>spiderman??? Sorry, we don't have that movie :(</code></p>
+
+        <p id="inject-html">Injecție HTML de bază:</p>
+        <p id="input-spiderma">Input: <code>spiderma</code></p>
+        <div class="image-container">
+            <img src="AjaxJson6.png" alt="Pasul 6" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+        <p id="result-spiderma">Rezultat: <code>spiderma??? Sorry, we don't have that movie :(</code></p>
+
+        <p id="inject-script">Încercare de injecție de script:</p>
+        <p id="input-script"><code>&lt;script&gt;</code></p>
+        <div class="image-container">
+            <img src="AjaxJson7.png" alt="Pasul 7" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+        <p id="result-script">Rezultat:</p>
+
+        <p id="other-injections">Alte injecții:</p>
+        <p id="input-lt-gt">Input: <code>&lt;&gt;</code></p>
+        <div class="image-container">
+            <img src="AjaxJson8.png" alt="Pasul 8" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+        <p id="result-lt-gt">Rezultat: <code>&lt;&gt;</code></p>
+
+        <p id="input-bold"><code>&lt;b&gt;Hacked&lt;/b&gt;</code></p>
+        <div class="image-container">
+            <img src="AjaxJson9.png" alt="Pasul 9" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+        <p id="result-bold"><code>&lt;b&gt;Hacked&lt;/b&gt;</code></p>
+
+        <p id="input-alert"><code>&lt;script&gt;alert('Hacked')&lt;/script&gt;</code></p> 
+        <div class="image-container">
+            <img src="AjaxJson10.png" alt="Pasul 10" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+        <p id="result-alert">Rezultat: ??? Sorry, we don't have that movie :(</p>
+
+        <p id="input-alert2"><code>&lt;script&gt;alert(/Hacked/)&lt;/script&gt;</code></p> 
+        <div class="image-container">
+            <img src="AjaxJson11.png" alt="Pasul 11" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+        <p id="result-alert2">Rezultat: ??? Sorry, we don't have that movie :(</p>
+
+        <p id="input-onerror"><code>&lt;img src=x onerror=alert(5)&gt;</code></p> 
+        <div class="image-container">
+            <img src="AjaxJson12.png" alt="Pasul 12" width="400" height="300" ondblclick="openFullscreen(this)">
+        </div>
+        <p id="result-onerror">Rezultat: ??? Sorry, we don't have that movie :(</p>
+        <p id="error-note">De asemenea, vom primi o eroare "5".</p>
+
+        <h2 id="step4-title">Pasul 4: Observarea Rezultatelor</h2>
+        <p id="step4-review"><strong>Revizuiți payload-urile XSS reflectate:</strong></p>
+        <p id="step4-observe">Observați că injecțiile HTML și de script nu se execută deoarece aplicația gestionează intrările într-un mod care nu execută direct tag-urile de script. În schimb, le reflectă ca text.</p>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 My Website. All rights reserved.</p>
+    </footer>
+
+    <div id="fullscreenContainer" class="fullscreen" style="display: none;" ondblclick="closeFullscreen()">
+        <img id="fullscreenImage" src="" alt="">
+    </div>
+
+    <script>
+        function openFullscreen(img) {
+            var fullscreenContainer = document.getElementById('fullscreenContainer');
+            var fullscreenImage = document.getElementById('fullscreenImage');
+            fullscreenImage.src = img.src;
+            fullscreenContainer.style.display = 'flex';
+        }
+
+        function closeFullscreen() {
+            var fullscreenContainer = document.getElementById('fullscreenContainer');
+            fullscreenContainer.style.display = 'none';
+        }
+
+        function changeLanguage(lang) {
+            localStorage.setItem('language', lang);
+            if (lang === 'ro') {
+                document.getElementById('title').textContent = 'Tutorial de Exploatare a Vulnerabilității XSS în bWAPP';
+                document.getElementById('step1-title').textContent = 'Pasul 1: Accesarea aplicației bWAPP';
+                document.getElementById('step1-desc').textContent = 'Deschideți bWAPP într-un browser web:';
+                document.getElementById('step1-url').textContent = 'URL: http://localhost/bWAPP/xss_ajax_2-1.php';
+                document.getElementById('step1-info').textContent = 'Aceasta este pagina principală unde puteți selecta diferite vulnerabilități de securitate pentru testare.';
+                document.getElementById('step2-title').textContent = 'Pasul 2: Configurarea Vulnerabilității';
+                document.getElementById('step2-desc').textContent = 'Selectați vulnerabilitatea XSS:';
+                document.getElementById('step2-info').textContent = 'Alegeți "Cross-Site Scripting - Reflected (JSON)" din meniul dropdown sub "Choose your bug" și faceți clic pe "Hack".';
+                document.getElementById('step2-security').textContent = 'Setați nivelul de securitate:';
+                document.getElementById('step2-security-info').textContent = 'Asigurați-vă că nivelul de securitate este setat la "low". Acest lucru face ca vulnerabilitatea să fie mai ușor de exploatat.';
+                document.getElementById('step2-json').textContent = 'Putem observa că diferența dintre metoda (JSON) și metoda (AJAX/JSON) este că la JSON, apare un buton de căutare, în timp ce la (AJAX/JSON), căutarea se efectuează imediat după introducerea textului.';
+                document.getElementById('step3-title').textContent = 'Pasul 3: Efectuarea Exploatării';
+                document.getElementById('step3-desc').textContent = 'Căutați un film:';
+                document.getElementById('step3-ajax').textContent = 'Ne întoarcem la metoda (AJAX/JSON).';
+                document.getElementById('step3-info').textContent = 'Pe pagina "XSS - Reflected (AJAX/JSON)", există un câmp de intrare pentru căutarea unui film. Acesta este locul unde veți injecta payload-ul XSS.';
+                document.getElementById('step3-inject').textContent = 'Injectarea diferitelor payload-uri:';
+                document.getElementById('inject-text').textContent = 'Injecție de text simplu:';
+                document.getElementById('input-spiderman').textContent = 'Input: spiderman';
+                document.getElementById('result-spiderman').textContent = 'Rezultat: spiderman??? Sorry, we don\'t have that movie :(';
+                document.getElementById('inject-html').textContent = 'Injecție HTML de bază:';
+                document.getElementById('input-spiderma').textContent = 'Input: spiderma';
+                document.getElementById('result-spiderma').textContent = 'Rezultat: spiderma??? Sorry, we don\'t have that movie :(';
+                document.getElementById('inject-script').textContent = 'Încercare de injecție de script:';
+                document.getElementById('input-script').textContent = '&lt;script&gt;';
+                document.getElementById('result-script').textContent = 'Rezultat:';
+                document.getElementById('other-injections').textContent = 'Alte injecții:';
+                document.getElementById('input-lt-gt').textContent = 'Input: &lt;&gt;';
+                document.getElementById('result-lt-gt').textContent = 'Rezultat: &lt;&gt;';
+                document.getElementById('input-bold').textContent = '&lt;b&gt;Hacked&lt;/b&gt;';
+                document.getElementById('result-bold').textContent = '&lt;b&gt;Hacked&lt;/b&gt;';
+                document.getElementById('input-alert').textContent = '&lt;script&gt;alert(\'Hacked\')&lt;/script&gt;';
+                document.getElementById('result-alert').textContent = 'Rezultat: ??? Sorry, we don\'t have that movie :(';
+                document.getElementById('input-alert2').textContent = '&lt;script&gt;alert(/Hacked/)&lt;/script&gt;';
+                document.getElementById('result-alert2').textContent = 'Rezultat: ??? Sorry, we don\'t have that movie :(';
+                document.getElementById('input-onerror').textContent = '&lt;img src=x onerror=alert(5)&gt;';
+                document.getElementById('result-onerror').textContent = 'Rezultat: ??? Sorry, we don\'t have that movie :(';
+                document.getElementById('error-note').textContent = 'De asemenea, vom primi o eroare "5".';
+                document.getElementById('step4-title').textContent = 'Pasul 4: Observarea Rezultatelor';
+                document.getElementById('step4-review').textContent = 'Revizuiți payload-urile XSS reflectate:';
+                document.getElementById('step4-observe').textContent = 'Observați că injecțiile HTML și de script nu se execută deoarece aplicația gestionează intrările într-un mod care nu execută direct tag-urile de script. În schimb, le reflectă ca text.';
+            } else {
+                document.getElementById('title').textContent = 'Exploiting XSS Vulnerability in bWAPP';
+                document.getElementById('step1-title').textContent = 'Step 1: Accessing the bWAPP Application';
+                document.getElementById('step1-desc').textContent = 'Open bWAPP in a web browser:';
+                document.getElementById('step1-url').textContent = 'URL: http://localhost/bWAPP/xss_ajax_2-1.php';
+                document.getElementById('step1-info').textContent = 'This is the main page where you can select different security vulnerabilities to test.';
+                document.getElementById('step2-title').textContent = 'Step 2: Configuring the Vulnerability';
+                document.getElementById('step2-desc').textContent = 'Select the XSS vulnerability:';
+                document.getElementById('step2-info').textContent = 'Choose "Cross-Site Scripting - Reflected (JSON)" from the dropdown under "Choose your bug" and click "Hack".';
+                document.getElementById('step2-security').textContent = 'Set the security level:';
+                document.getElementById('step2-security-info').textContent = 'Make sure the security level is set to "low". This makes the vulnerability easier to exploit.';
+                document.getElementById('step2-json').textContent = 'We can observe that the difference between the (JSON) method and the (AJAX/JSON) method is that with JSON, there is a search button, while with (AJAX/JSON), the search is performed immediately after entering text.';
+                document.getElementById('step3-title').textContent = 'Step 3: Performing the Exploit';
+                document.getElementById('step3-desc').textContent = 'Search for a movie:';
+                document.getElementById('step3-ajax').textContent = 'We return to the (AJAX/JSON) method.';
+                document.getElementById('step3-info').textContent = 'On the "XSS - Reflected (AJAX/JSON)" page, there is an input field for searching a movie. This is where you will inject the XSS payload.';
+                document.getElementById('step3-inject').textContent = 'Injecting different payloads:';
+                document.getElementById('inject-text').textContent = 'Simple text injection:';
+                document.getElementById('input-spiderman').textContent = 'Input: spiderman';
+                document.getElementById('result-spiderman').textContent = 'Result: spiderman??? Sorry, we don\'t have that movie :(';
+                document.getElementById('inject-html').textContent = 'Basic HTML injection:';
+                document.getElementById('input-spiderma').textContent = 'Input: spiderma';
+                document.getElementById('result-spiderma').textContent = 'Result: spiderma??? Sorry, we don\'t have that movie :(';
+                document.getElementById('inject-script').textContent = 'Attempt to inject script:';
+                document.getElementById('input-script').textContent = '&lt;script&gt;';
+                document.getElementById('result-script').textContent = 'Result:';
+                document.getElementById('other-injections').textContent = 'Other injections:';
+                document.getElementById('input-lt-gt').textContent = 'Input: &lt;&gt;';
+                document.getElementById('result-lt-gt').textContent = 'Result: &lt;&gt;';
+                document.getElementById('input-bold').textContent = '&lt;b&gt;Hacked&lt;/b&gt;';
+                document.getElementById('result-bold').textContent = '&lt;b&gt;Hacked&lt;/b&gt;';
+                document.getElementById('input-alert').textContent = '&lt;script&gt;alert(\'Hacked\')&lt;/script&gt;';
+                document.getElementById('result-alert').textContent = 'Result: ??? Sorry, we don\'t have that movie :(';
+                document.getElementById('input-alert2').textContent = '&lt;script&gt;alert(/Hacked/)&lt;/script&gt;';
+                document.getElementById('result-alert2').textContent = 'Result: ??? Sorry, we don\'t have that movie :(';
+                document.getElementById('input-onerror').textContent = '&lt;img src=x onerror=alert(5)&gt;';
+                document.getElementById('result-onerror').textContent = 'Result: ??? Sorry, we don\'t have that movie :(';
+                document.getElementById('error-note').textContent = 'We will also get a "5" error.';
+                document.getElementById('step4-title').textContent = 'Step 4: Observing Results';
+                document.getElementById('step4-review').textContent = 'Review the reflected XSS payloads:';
+                document.getElementById('step4-observe').textContent = 'Notice that HTML and script injections do not execute because the application handles inputs in a way that does not directly execute script tags. Instead, it reflects them as text.';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var lang = localStorage.getItem('language') || 'ro';
+            document.querySelector('.language-selector select').value = lang;
+            changeLanguage(lang);
+        });
+    </script>
+</body>
+</html>
